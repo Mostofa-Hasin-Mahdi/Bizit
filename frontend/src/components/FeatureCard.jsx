@@ -1,9 +1,23 @@
-export default function FeatureCard({ icon, title, desc }) {
+import { ShieldCheck, Package, DollarSign, Truck, BarChart3 } from "lucide-react";
+
+const iconMap = {
+  auth: ShieldCheck,
+  inventory: Package,
+  sales: DollarSign,
+  supplier: Truck,
+  analytics: BarChart3,
+};
+
+const FeatureCard = ({ type, title, description }) => {
+  const Icon = iconMap[type];
+
   return (
-    <div className="bg-[#0B0B0F] border border-[#2B124C] rounded-2xl p-6 shadow hover:shadow-xl transition">
-      <div className="text-[#E9D5FF] mb-4">{icon}</div>
-      <h4 className="font-semibold mb-2">{title}</h4>
-      <p className="text-sm text-gray-400">{desc}</p>
+    <div className="feature-card">
+      <Icon size={32} className="card-icon" />
+      <h3>{title}</h3>
+      <p>{description}</p>
     </div>
   );
-}
+};
+
+export default FeatureCard;
