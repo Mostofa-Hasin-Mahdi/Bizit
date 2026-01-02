@@ -1,8 +1,17 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import "../styles/login.css";
 
+// Hard-coded owner credentials
+const OWNER_CREDENTIALS = {
+  username: "owner",
+  password: "owner123",
+  role: "owner"
+};
+
 export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDarkMode }) {
+  const navigate = useNavigate();
   const [internalDarkMode, setInternalDarkMode] = useState(false);
   const darkMode = propDarkMode !== undefined ? propDarkMode : internalDarkMode;
   const setDarkMode = propSetDarkMode || setInternalDarkMode;
@@ -12,17 +21,35 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
     password: "",
   });
 
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
+    setError(""); // Clear error on input change
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log("Login attempt:", formData);
+    setError("");
+
+    // Check if credentials match owner
+    if (
+      formData.username === OWNER_CREDENTIALS.username &&
+      formData.password === OWNER_CREDENTIALS.password
+    ) {
+      // Store user info in localStorage
+      localStorage.setItem("user", JSON.stringify({
+        username: formData.username,
+        role: OWNER_CREDENTIALS.role
+      }));
+      // Redirect to owner dashboard
+      navigate("/dashboard/owner");
+    } else {
+      setError("Invalid username or password");
+    }
   };
 
   return (
@@ -77,6 +104,12 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
                 required
               />
             </div>
+
+            {error && (
+              <div className="error-message">
+                {error}
+              </div>
+            )}
 
             <div className="form-options">
               <label className="remember-me">
