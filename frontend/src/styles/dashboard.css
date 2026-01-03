@@ -181,6 +181,80 @@
   margin: 0;
 }
 
+.dashboard-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stock-levels-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+  white-space: nowrap;
+}
+
+.stock-levels-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
+}
+
+.stock-levels-btn svg {
+  flex-shrink: 0;
+}
+
+.back-to-dashboard-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(59, 2, 112, 0.3);
+  white-space: nowrap;
+}
+
+.back-to-dashboard-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(59, 2, 112, 0.4);
+}
+
+.back-to-dashboard-btn svg {
+  flex-shrink: 0;
+}
+
+/* Mobile responsive for stock levels button */
+@media (max-width: 768px) {
+  .dashboard-header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stock-levels-btn,
+  .back-to-dashboard-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* =========================
    CHARTS SECTION
 ========================= */

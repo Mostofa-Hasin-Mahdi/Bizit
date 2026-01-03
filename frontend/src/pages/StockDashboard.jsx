@@ -10,7 +10,8 @@ import {
   Building2,
   Plus,
   Edit,
-  Trash2
+  Trash2,
+  ArrowLeft
 } from "lucide-react";
 import {
   LineChart,
@@ -72,24 +73,48 @@ const StockDashboard = () => {
   }));
 
   useEffect(() => {
-    // Check if user is logged in and is a stock employee
+    // Check if user is logged in - allow stock employees, owners, and admins
     const currentUser = getCurrentUser();
-    if (!currentUser || currentUser.role !== "employee" || currentUser.department !== "stock") {
+    if (!currentUser) {
       navigate("/login");
       return;
     }
-    setUser(currentUser);
     
-    // Set organization for employees
-    if (currentUser.organizationId) {
-      const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
-      const userOrg = organizations.find(o => o.id === currentUser.organizationId);
-      if (userOrg) {
-        setCurrentOrganization(userOrg);
-        localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
+    // Allow access for: stock employees, owners, and admins
+    const hasAccess = 
+      (currentUser.role === "employee" && currentUser.department === "stock") ||
+      currentUser.role === "owner" ||
+      currentUser.role === "admin";
+    
+    if (!hasAccess) {
+      navigate("/login");
+      return;
+    }
+    
+    // Set user state only once
+    if (!user) {
+      setUser(currentUser);
+    }
+    
+    // Set organization for employees/owners/admins
+    const org = getCurrentOrganization();
+    if (!currentOrganization) {
+      if (org) {
+        setCurrentOrganization(org);
+      } else if (currentUser.organizationId) {
+        const timer = setTimeout(() => {
+          const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
+          const userOrg = organizations.find(o => o.id === currentUser.organizationId);
+          if (userOrg) {
+            setCurrentOrganization(userOrg);
+            localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
+          }
+        }, 0);
+        return () => clearTimeout(timer);
       }
     }
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogout = () => {
     logoutUser();
@@ -140,7 +165,9 @@ const StockDashboard = () => {
             <Building2 size={16} />
             <span className="dashboard-org-name">{currentOrganization?.name || "Unknown"}</span>
           </div>
-          <span className="dashboard-role stock-role">Stock Department</span>
+          <span className="dashboard-role stock-role">
+            {user?.role === "owner" ? "Owner" : user?.role === "admin" ? "Admin" : "Stock Department"}
+          </span>
         </div>
         <div className="dashboard-nav-actions">
           <button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
@@ -156,8 +183,21 @@ const StockDashboard = () => {
       {/* Dashboard Content */}
       <main className="dashboard-main">
         <div className="dashboard-header">
-          <h2>Stock Management Dashboard</h2>
-          <p>Monitor and manage your inventory levels</p>
+          <div className="dashboard-header-content">
+            <div>
+              <h2>Stock Management Dashboard</h2>
+              <p>Monitor and manage your inventory levels</p>
+            </div>
+            {(user?.role === "owner" || user?.role === "admin") && (
+              <button
+                className="back-to-dashboard-btn"
+                onClick={() => navigate("/dashboard/owner")}
+              >
+                <ArrowLeft size={18} />
+                <span>Back to Dashboard</span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Overview Stats */}

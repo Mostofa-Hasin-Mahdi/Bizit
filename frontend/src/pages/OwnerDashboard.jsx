@@ -9,7 +9,8 @@ import {
   UserCog,
   LogOut,
   BarChart3,
-  Building2
+  Building2,
+  Eye
 } from "lucide-react";
 import {
   LineChart,
@@ -248,12 +249,20 @@ const OwnerDashboard = () => {
             Dashboard
           </button>
           {user?.role === "owner" && (
-            <button
-              className={`dashboard-tab ${activeTab === "admins" ? "active" : ""}`}
-              onClick={() => setActiveTab("admins")}
-            >
-              Admin Management
-            </button>
+            <>
+              <button
+                className={`dashboard-tab ${activeTab === "admins" ? "active" : ""}`}
+                onClick={() => setActiveTab("admins")}
+              >
+                Admin Management
+              </button>
+              <button
+                className={`dashboard-tab ${activeTab === "employees" ? "active" : ""}`}
+                onClick={() => setActiveTab("employees")}
+              >
+                Employee Management
+              </button>
+            </>
           )}
           {user?.role === "admin" && (
             <button
@@ -269,7 +278,7 @@ const OwnerDashboard = () => {
         {activeTab === "admins" && user?.role === "owner" && (
           <AdminManagement />
         )}
-        {activeTab === "employees" && user?.role === "admin" && (
+        {activeTab === "employees" && (user?.role === "admin" || user?.role === "owner") && (
           <EmployeeManagement />
         )}
 
@@ -277,8 +286,19 @@ const OwnerDashboard = () => {
         {activeTab === "dashboard" && (
           <>
             <div className="dashboard-header">
-              <h2>Dashboard Overview</h2>
-              <p>Welcome back! Here's your business at a glance.</p>
+              <div className="dashboard-header-content">
+                <div>
+                  <h2>Dashboard Overview</h2>
+                  <p>Welcome back! Here's your business at a glance.</p>
+                </div>
+                <button
+                  className="stock-levels-btn"
+                  onClick={() => navigate("/dashboard/stock")}
+                >
+                  <Eye size={18} />
+                  <span>See Stock Levels</span>
+                </button>
+              </div>
             </div>
 
         {/* Charts Section */}
