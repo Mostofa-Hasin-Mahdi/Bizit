@@ -3,6 +3,7 @@ import HomePage from "./pages/homepage";
 import Login from "./pages/login";
 import Register from "./pages/register";
 import OwnerDashboard from "./pages/OwnerDashboard";
+import StockDashboard from "./pages/StockDashboard";
 import "./App.css";
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/dashboard/owner" element={<OwnerDashboard />} />
+      <Route path="/dashboard/stock" element={<StockDashboard />} />
     </Routes>
   );
 }

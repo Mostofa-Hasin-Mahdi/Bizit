@@ -80,7 +80,7 @@ export default function Register() {
             </div>
             <h2>Create Account</h2>
             <p className="auth-subtitle">
-              Join Bizit and start managing your business smarter
+              OWNER ACCOUNT
             </p>
           </div>
 

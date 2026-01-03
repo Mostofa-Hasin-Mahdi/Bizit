@@ -62,8 +62,23 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
       if (user.role === "owner" || user.role === "admin") {
         navigate("/dashboard/owner");
       } else if (user.role === "employee") {
-        // For now, employees also go to dashboard (can be changed later)
-        navigate("/dashboard/owner");
+        // Set organization for employees
+        if (user.organizationId) {
+          const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
+          const userOrg = organizations.find(o => o.id === user.organizationId);
+          if (userOrg) {
+            localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
+          }
+        }
+        // Redirect based on department
+        if (user.department === "stock") {
+          navigate("/dashboard/stock");
+        } else if (user.department === "sales") {
+          // Sales dashboard can be added later
+          navigate("/dashboard/owner");
+        } else {
+          navigate("/dashboard/owner");
+        }
       } else {
         navigate("/login");
       }
