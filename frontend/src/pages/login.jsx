@@ -90,7 +90,7 @@ export default function Login() {
     <div className={`home ${darkMode ? "dark" : ""}`}>
       {/* Navbar */}
       <header className="navbar">
-        <div className="logo">Bizit</div>
+        <Link to="/" className="logo" style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>Bizit</Link>
         <button
           className="theme-toggle"
           onClick={toggleDarkMode}
