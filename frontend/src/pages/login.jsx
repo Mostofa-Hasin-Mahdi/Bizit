@@ -1,17 +1,12 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
+import { authenticateUser, setCurrentUser } from "../utils/storage";
 import "../styles/login.css";
-
-// Hard-coded owner credentials
-const OWNER_CREDENTIALS = {
-  username: "owner",
-  password: "owner123",
-  role: "owner"
-};
 
 export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDarkMode }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [internalDarkMode, setInternalDarkMode] = useState(false);
   const darkMode = propDarkMode !== undefined ? propDarkMode : internalDarkMode;
   const setDarkMode = propSetDarkMode || setInternalDarkMode;
@@ -22,6 +17,16 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
   });
 
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  useEffect(() => {
+    // Check for success message from registration
+    if (location.state?.message) {
+      setSuccessMessage(location.state.message);
+      // Clear the message from location state
+      window.history.replaceState({}, document.title);
+    }
+  }, [location]);
 
   const handleChange = (e) => {
     setFormData({
@@ -29,22 +34,20 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
       [e.target.name]: e.target.value,
     });
     setError(""); // Clear error on input change
+    setSuccessMessage(""); // Clear success message on input change
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError("");
+    setSuccessMessage("");
 
-    // Check if credentials match owner
-    if (
-      formData.username === OWNER_CREDENTIALS.username &&
-      formData.password === OWNER_CREDENTIALS.password
-    ) {
+    // Authenticate user
+    const user = authenticateUser(formData.username, formData.password);
+    
+    if (user) {
       // Store user info in localStorage
-      localStorage.setItem("user", JSON.stringify({
-        username: formData.username,
-        role: OWNER_CREDENTIALS.role
-      }));
+      setCurrentUser(user);
       // Redirect to owner dashboard
       navigate("/dashboard/owner");
     } else {
@@ -105,6 +108,12 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
               />
             </div>
 
+            {successMessage && (
+              <div className="success-message">
+                {successMessage}
+              </div>
+            )}
+
             {error && (
               <div className="error-message">
                 {error}
@@ -128,7 +137,9 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
 
           <div className="auth-footer">
             <span>Don't have an account?</span>
-            <button className="register-btn">Register</button>
+            <Link to="/register" className="register-btn">
+              Register
+            </Link>
           </div>
         </div>
       </section>

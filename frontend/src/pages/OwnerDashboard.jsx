@@ -8,7 +8,8 @@ import {
   Users,
   UserCog,
   LogOut,
-  BarChart3
+  BarChart3,
+  Building2
 } from "lucide-react";
 import {
   LineChart,
@@ -23,11 +24,15 @@ import {
   Tooltip,
   Legend
 } from "recharts";
+import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
+import OrganizationSelector from "../components/OrganizationSelector";
 import "../styles/dashboard.css";
 
 const OwnerDashboard = () => {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
+  const [currentOrganization, setCurrentOrganization] = useState(getCurrentOrganization());
+  const [user, setUser] = useState(null);
 
   // Hard-coded dashboard data (will be replaced with API calls later)
   const [dashboardData] = useState({
@@ -62,15 +67,25 @@ const OwnerDashboard = () => {
 
   useEffect(() => {
     // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    if (!user || user.role !== "owner") {
+    const currentUser = getCurrentUser();
+    if (!currentUser || currentUser.role !== "owner") {
       navigate("/login");
+      return;
     }
+    setUser(currentUser);
+    
+    // Check if organization is selected
+    const org = getCurrentOrganization();
+    setCurrentOrganization(org);
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    logoutUser();
     navigate("/login");
+  };
+
+  const handleOrganizationSelect = (organization) => {
+    setCurrentOrganization(organization);
   };
 
   // Stats for simple display cards
@@ -93,6 +108,36 @@ const OwnerDashboard = () => {
     }
   ];
 
+  // Show organization selector if no organization is selected
+  if (!currentOrganization) {
+    return (
+      <div className={`dashboard ${darkMode ? "dark" : ""}`}>
+        <header className="dashboard-navbar">
+          <div className="dashboard-logo-section">
+            <BarChart3 size={28} className="dashboard-logo-icon" />
+            <h1 className="dashboard-logo">Bizit</h1>
+            <span className="dashboard-role">Owner</span>
+          </div>
+          <div className="dashboard-nav-actions">
+            <button
+              className="theme-toggle"
+              onClick={() => setDarkMode(!darkMode)}
+            >
+              {darkMode ? "☀️" : "🌙"}
+            </button>
+            <button className="logout-btn" onClick={handleLogout}>
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
+          </div>
+        </header>
+        <main className="dashboard-main">
+          <OrganizationSelector onSelect={handleOrganizationSelect} />
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className={`dashboard ${darkMode ? "dark" : ""}`}>
       {/* Navbar */}
@@ -100,6 +145,10 @@ const OwnerDashboard = () => {
         <div className="dashboard-logo-section">
           <BarChart3 size={28} className="dashboard-logo-icon" />
           <h1 className="dashboard-logo">Bizit</h1>
+          <div className="dashboard-org-info">
+            <Building2 size={16} />
+            <span className="dashboard-org-name">{currentOrganization.name}</span>
+          </div>
           <span className="dashboard-role">Owner</span>
         </div>
         <div className="dashboard-nav-actions">

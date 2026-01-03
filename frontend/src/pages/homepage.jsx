@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import FeatureCard from "../components/FeatureCard";
 import "../styles/homepage.css";
 
 const HomePage = () => {
   const [darkMode, setDarkMode] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <div className={darkMode ? "home dark" : "home"}>
@@ -19,7 +21,9 @@ const HomePage = () => {
         <p>
           An intelligent business management platform built for modern SMEs.
         </p>
-        <button className="primary-btn">Get Started</button>
+        <button className="primary-btn" onClick={() => navigate("/register")}>
+          Get Started
+        </button>
       </section>
 
       {/* Why Bizit */}
