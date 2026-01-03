@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDarkMode } from "../contexts/DarkModeContext";
 import {
   Package,
   AlertTriangle,
@@ -31,17 +32,17 @@ import "../styles/stock-dashboard.css";
 
 const StockDashboard = () => {
   const navigate = useNavigate();
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useDarkMode();
   const [currentOrganization, setCurrentOrganization] = useState(getCurrentOrganization());
   const [user, setUser] = useState(null);
 
   // Sample stock data (will be replaced with API calls later)
   const [stockItems] = useState([
-    { id: 1, name: "Ryzen 5 7500F", quantity: 150, minThreshold: 50, maxCapacity: 500, category: "Electronics" },
-    { id: 2, name: "Galax RTX 4070ti 8GB", quantity: 25, minThreshold: 30, maxCapacity: 200, category: "Electronics" },
-    { id: 3, name: "ASROCK B550 Motherboard", quantity: 320, minThreshold: 100, maxCapacity: 600, category: "Electronics" },
+    { id: 1, name: "Ryzen 5 7500F", quantity: 150, minThreshold: 50, maxCapacity: 500, category: "Components" },
+    { id: 2, name: "Galax RTX 4070ti 8GB", quantity: 25, minThreshold: 30, maxCapacity: 200, category: "Components" },
+    { id: 3, name: "ASROCK B550 Motherboard", quantity: 320, minThreshold: 100, maxCapacity: 600, category: "Components" },
     { id: 4, name: "Kinera Freya", quantity: 45, minThreshold: 50, maxCapacity: 300, category: "Accessories" },
-    { id: 5, name: "Eweadn Ace x87", quantity: 180, minThreshold: 80, maxCapacity: 400, category: "Storage" },
+    { id: 5, name: "Netac 512GB M.2 NVME SSD", quantity: 180, minThreshold: 80, maxCapacity: 400, category: "Storage" },
   ]);
 
   // Calculate low stock items
@@ -126,7 +127,7 @@ const StockDashboard = () => {
             <span className="dashboard-role">Stock Employee</span>
           </div>
           <div className="dashboard-nav-actions">
-            <button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
+            <button className="theme-toggle" onClick={toggleDarkMode}>
               {darkMode ? "☀️" : "🌙"}
             </button>
             <button className="logout-btn" onClick={handleLogout}>
@@ -158,7 +159,7 @@ const StockDashboard = () => {
           </span>
         </div>
         <div className="dashboard-nav-actions">
-          <button className="theme-toggle" onClick={() => setDarkMode(!darkMode)}>
+          <button className="theme-toggle" onClick={toggleDarkMode}>
             {darkMode ? "☀️" : "🌙"}
           </button>
           <button className="logout-btn" onClick={handleLogout}>

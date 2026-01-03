@@ -1,16 +1,16 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDarkMode } from "../contexts/DarkModeContext";
 import Navbar from "../components/Navbar";
 import FeatureCard from "../components/FeatureCard";
 import "../styles/homepage.css";
 
 const HomePage = () => {
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
 
   return (
     <div className={darkMode ? "home dark" : "home"}>
-      <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
+      <Navbar darkMode={darkMode} setDarkMode={toggleDarkMode} />
 
       {/* Hero */}
       <section className="hero">

@@ -2,11 +2,12 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserPlus } from "lucide-react";
 import { createUser } from "../utils/storage";
+import { useDarkMode } from "../contexts/DarkModeContext";
 import "../styles/login.css";
 
 export default function Register() {
   const navigate = useNavigate();
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -65,7 +66,7 @@ export default function Register() {
         <div className="logo">Bizit</div>
         <button
           className="theme-toggle"
-          onClick={() => setDarkMode(!darkMode)}
+          onClick={toggleDarkMode}
         >
           {darkMode ? "☀️" : "🌙"}
         </button>

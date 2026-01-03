@@ -2,14 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
 import { authenticateUser, setCurrentUser } from "../utils/storage";
+import { useDarkMode } from "../contexts/DarkModeContext";
 import "../styles/login.css";
 
-export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDarkMode }) {
+export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [internalDarkMode, setInternalDarkMode] = useState(false);
-  const darkMode = propDarkMode !== undefined ? propDarkMode : internalDarkMode;
-  const setDarkMode = propSetDarkMode || setInternalDarkMode;
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   const [formData, setFormData] = useState({
     username: "",
@@ -94,7 +93,7 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
         <div className="logo">Bizit</div>
         <button
           className="theme-toggle"
-          onClick={() => setDarkMode(!darkMode)}
+          onClick={toggleDarkMode}
         >
           {darkMode ? "☀️" : "🌙"}
         </button>

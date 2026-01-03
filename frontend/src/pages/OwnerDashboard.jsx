@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDarkMode } from "../contexts/DarkModeContext";
 import {
   Package,
   DollarSign,
@@ -33,7 +34,7 @@ import "../styles/dashboard.css";
 
 const OwnerDashboard = () => {
   const navigate = useNavigate();
-  const [darkMode, setDarkMode] = useState(false);
+  const { darkMode, toggleDarkMode } = useDarkMode();
   const [currentOrganization, setCurrentOrganization] = useState(getCurrentOrganization());
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, management
@@ -154,7 +155,7 @@ const OwnerDashboard = () => {
           <div className="dashboard-nav-actions">
             <button
               className="theme-toggle"
-              onClick={() => setDarkMode(!darkMode)}
+              onClick={toggleDarkMode}
             >
               {darkMode ? "☀️" : "🌙"}
             </button>
@@ -190,7 +191,7 @@ const OwnerDashboard = () => {
           <div className="dashboard-nav-actions">
             <button
               className="theme-toggle"
-              onClick={() => setDarkMode(!darkMode)}
+              onClick={toggleDarkMode}
             >
               {darkMode ? "☀️" : "🌙"}
             </button>
