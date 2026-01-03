@@ -37,11 +37,11 @@ const StockDashboard = () => {
 
   // Sample stock data (will be replaced with API calls later)
   const [stockItems] = useState([
-    { id: 1, name: "Product A", quantity: 150, minThreshold: 50, maxCapacity: 500, category: "Electronics" },
-    { id: 2, name: "Product B", quantity: 25, minThreshold: 30, maxCapacity: 200, category: "Furniture" },
-    { id: 3, name: "Product C", quantity: 320, minThreshold: 100, maxCapacity: 600, category: "Electronics" },
-    { id: 4, name: "Product D", quantity: 45, minThreshold: 50, maxCapacity: 300, category: "Accessories" },
-    { id: 5, name: "Product E", quantity: 180, minThreshold: 80, maxCapacity: 400, category: "Furniture" },
+    { id: 1, name: "Ryzen 5 7500F", quantity: 150, minThreshold: 50, maxCapacity: 500, category: "Electronics" },
+    { id: 2, name: "Galax RTX 4070ti 8GB", quantity: 25, minThreshold: 30, maxCapacity: 200, category: "Electronics" },
+    { id: 3, name: "ASROCK B550 Motherboard", quantity: 320, minThreshold: 100, maxCapacity: 600, category: "Electronics" },
+    { id: 4, name: "Kinera Freya", quantity: 45, minThreshold: 50, maxCapacity: 300, category: "Accessories" },
+    { id: 5, name: "Eweadn Ace x87", quantity: 180, minThreshold: 80, maxCapacity: 400, category: "Storage" },
   ]);
 
   // Calculate low stock items
@@ -91,30 +91,18 @@ const StockDashboard = () => {
       return;
     }
     
-    // Set user state only once
-    if (!user) {
-      setUser(currentUser);
-    }
+    setUser(currentUser);
     
-    // Set organization for employees/owners/admins
-    const org = getCurrentOrganization();
-    if (!currentOrganization) {
-      if (org) {
-        setCurrentOrganization(org);
-      } else if (currentUser.organizationId) {
-        const timer = setTimeout(() => {
-          const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
-          const userOrg = organizations.find(o => o.id === currentUser.organizationId);
-          if (userOrg) {
-            setCurrentOrganization(userOrg);
-            localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
-          }
-        }, 0);
-        return () => clearTimeout(timer);
+    // Set organization for employees
+    if (currentUser.organizationId) {
+      const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
+      const userOrg = organizations.find(o => o.id === currentUser.organizationId);
+      if (userOrg) {
+        setCurrentOrganization(userOrg);
+        localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate]);
 
   const handleLogout = () => {
     logoutUser();
