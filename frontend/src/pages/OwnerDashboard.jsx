@@ -24,7 +24,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
+import { getCurrentUser, getCurrentOrganization, logout as logoutUser, getAdminsByOrganization, getEmployeesByOrganization } from "../utils/storage";
 import OrganizationSelector from "../components/OrganizationSelector";
 import AdminManagement from "../components/AdminManagement";
 import EmployeeManagement from "../components/EmployeeManagement";
@@ -36,6 +36,8 @@ const OwnerDashboard = () => {
   const [currentOrganization, setCurrentOrganization] = useState(getCurrentOrganization());
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, management
+  const [numAdmins, setNumAdmins] = useState(0);
+  const [numEmployees, setNumEmployees] = useState(0);
 
   // Hard-coded dashboard data (will be replaced with API calls later)
   const [dashboardData] = useState({
@@ -43,9 +45,7 @@ const OwnerDashboard = () => {
     maxStockCapacity: 2000,
     totalSold: 45230,
     totalProfit: 18500,
-    totalLoss: 3200,
-    numAdmins: 3,
-    numEmployees: 12
+    totalLoss: 3200
   });
 
   // Sample data for total sold chart (last 7 days)
@@ -93,6 +93,24 @@ const OwnerDashboard = () => {
     }
   }, [navigate]);
 
+  // Update admin and employee counts when organization or activeTab changes
+  useEffect(() => {
+    if (!currentOrganization) {
+      setNumAdmins(0);
+      setNumEmployees(0);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      const admins = getAdminsByOrganization(currentOrganization.id);
+      const employees = getEmployeesByOrganization(currentOrganization.id);
+      setNumAdmins(admins.length);
+      setNumEmployees(employees.length);
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [currentOrganization, activeTab]);
+
   const handleLogout = () => {
     logoutUser();
     navigate("/login");
@@ -107,7 +125,7 @@ const OwnerDashboard = () => {
     {
       id: "admins",
       title: "No. of Admins",
-      value: dashboardData.numAdmins,
+      value: numAdmins,
       icon: UserCog,
       color: "var(--primary)",
       bgGradient: "linear-gradient(135deg, var(--primary), var(--accent))"
@@ -115,7 +133,7 @@ const OwnerDashboard = () => {
     {
       id: "employees",
       title: "No. of Employees",
-      value: dashboardData.numEmployees,
+      value: numEmployees,
       icon: Users,
       color: "var(--accent)",
       bgGradient: "linear-gradient(135deg, var(--accent), var(--primary))"
