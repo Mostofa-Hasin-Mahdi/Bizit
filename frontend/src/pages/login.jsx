@@ -48,8 +48,25 @@ export default function Login({ darkMode: propDarkMode, setDarkMode: propSetDark
     if (user) {
       // Store user info in localStorage
       setCurrentUser(user);
-      // Redirect to owner dashboard
-      navigate("/dashboard/owner");
+      
+      // For admins, set their organization automatically
+      if (user.role === "admin" && user.organizationId) {
+        const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
+        const userOrg = organizations.find(o => o.id === user.organizationId);
+        if (userOrg) {
+          localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
+        }
+      }
+      
+      // Redirect based on role
+      if (user.role === "owner" || user.role === "admin") {
+        navigate("/dashboard/owner");
+      } else if (user.role === "employee") {
+        // For now, employees also go to dashboard (can be changed later)
+        navigate("/dashboard/owner");
+      } else {
+        navigate("/login");
+      }
     } else {
       setError("Invalid username or password");
     }

@@ -91,3 +91,141 @@ export const setCurrentOrganization = (organization) => {
   localStorage.setItem('currentOrganization', JSON.stringify(organization));
 };
 
+// Admin management (only owners can create/delete admins)
+export const createAdmin = (username, password, email, organizationId) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser || currentUser.role !== 'owner') {
+    throw new Error('Only owners can create admins');
+  }
+  
+  const users = getUsers();
+  // Check if username already exists
+  if (users.find(u => u.username === username)) {
+    throw new Error('Username already exists');
+  }
+  // Check if email already exists
+  if (users.find(u => u.email === email)) {
+    throw new Error('Email already exists');
+  }
+  
+  const newAdmin = {
+    id: Date.now().toString(),
+    username,
+    password, // In production, this should be hashed
+    email,
+    role: 'admin',
+    organizationId,
+    createdBy: currentUser.id,
+    createdAt: new Date().toISOString()
+  };
+  
+  users.push(newAdmin);
+  localStorage.setItem('users', JSON.stringify(users));
+  return { ...newAdmin, password: undefined };
+};
+
+export const deleteAdmin = (adminId) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser || currentUser.role !== 'owner') {
+    throw new Error('Only owners can delete admins');
+  }
+  
+  const users = getUsers();
+  const admin = users.find(u => u.id === adminId && u.role === 'admin');
+  if (!admin) {
+    throw new Error('Admin not found');
+  }
+  
+  const updatedUsers = users.filter(u => u.id !== adminId);
+  localStorage.setItem('users', JSON.stringify(updatedUsers));
+  return true;
+};
+
+export const getAdminsByOrganization = (organizationId) => {
+  const users = getUsers();
+  return users.filter(u => u.role === 'admin' && u.organizationId === organizationId)
+    .map(u => ({ ...u, password: undefined }));
+};
+
+// Employee management (admins can create/delete employees)
+export const createEmployee = (username, password, email, department, organizationId) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser || currentUser.role !== 'admin') {
+    throw new Error('Only admins can create employees');
+  }
+  
+  if (!['stock', 'sales'].includes(department)) {
+    throw new Error('Department must be either "stock" or "sales"');
+  }
+  
+  const users = getUsers();
+  // Check if username already exists
+  if (users.find(u => u.username === username)) {
+    throw new Error('Username already exists');
+  }
+  // Check if email already exists
+  if (users.find(u => u.email === email)) {
+    throw new Error('Email already exists');
+  }
+  
+  const newEmployee = {
+    id: Date.now().toString(),
+    username,
+    password, // In production, this should be hashed
+    email,
+    role: 'employee',
+    department,
+    organizationId,
+    createdBy: currentUser.id,
+    createdAt: new Date().toISOString()
+  };
+  
+  users.push(newEmployee);
+  localStorage.setItem('users', JSON.stringify(users));
+  return { ...newEmployee, password: undefined };
+};
+
+export const deleteEmployee = (employeeId) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser || currentUser.role !== 'admin') {
+    throw new Error('Only admins can delete employees');
+  }
+  
+  const users = getUsers();
+  const employee = users.find(u => u.id === employeeId && u.role === 'employee');
+  if (!employee) {
+    throw new Error('Employee not found');
+  }
+  
+  const updatedUsers = users.filter(u => u.id !== employeeId);
+  localStorage.setItem('users', JSON.stringify(updatedUsers));
+  return true;
+};
+
+export const updateEmployeeDepartment = (employeeId, department) => {
+  const currentUser = getCurrentUser();
+  if (!currentUser || currentUser.role !== 'admin') {
+    throw new Error('Only admins can update employee departments');
+  }
+  
+  if (!['stock', 'sales'].includes(department)) {
+    throw new Error('Department must be either "stock" or "sales"');
+  }
+  
+  const users = getUsers();
+  const employee = users.find(u => u.id === employeeId && u.role === 'employee');
+  if (!employee) {
+    throw new Error('Employee not found');
+  }
+  
+  employee.department = department;
+  localStorage.setItem('users', JSON.stringify(users));
+  return { ...employee, password: undefined };
+};
+
+export const getEmployeesByOrganization = (organizationId) => {
+  const users = getUsers();
+  return users.filter(u => u.role === 'employee' && u.organizationId === organizationId)
+    .map(u => ({ ...u, password: undefined }));
+};
+

@@ -1,11 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Building2, Plus, Check } from "lucide-react";
-import { getUserOrganizations, createOrganization, setCurrentOrganization, getCurrentUser } from "../utils/storage";
+import { getUserOrganizations, createOrganization, setCurrentOrganization, getCurrentUser, getOrganizations } from "../utils/storage";
 import "../styles/organization.css";
 
 const OrganizationSelector = ({ onSelect }) => {
   const user = getCurrentUser();
-  const [organizations, setOrganizations] = useState(getUserOrganizations(user?.id || ""));
+  const [organizations, setOrganizations] = useState(() => {
+    if (user?.role === "owner") {
+      return getUserOrganizations(user?.id || "");
+    } else if (user?.role === "admin" && user?.organizationId) {
+      // Admins see only their assigned organization
+      const allOrgs = getOrganizations();
+      const userOrg = allOrgs.find(o => o.id === user.organizationId);
+      return userOrg ? [userOrg] : [];
+    }
+    return [];
+  });
   const [showCreateForm, setShowCreateForm] = useState(organizations.length === 0);
   const [formData, setFormData] = useState({
     name: "",
@@ -39,6 +49,16 @@ const OrganizationSelector = ({ onSelect }) => {
     onSelect(organization);
   };
 
+  useEffect(() => {
+    // Auto-select organization for admins
+    if (user?.role === "admin" && organizations.length === 1) {
+      const org = organizations[0];
+      setCurrentOrganization(org);
+      onSelect(org);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, organizations.length]);
+
   return (
     <div className="organization-selector">
       <div className="org-selector-header">
@@ -49,7 +69,7 @@ const OrganizationSelector = ({ onSelect }) => {
 
       {organizations.length > 0 && (
         <div className="org-list">
-          <h3>Your Organizations</h3>
+          <h3>{user?.role === "admin" ? "Your Organization" : "Your Organizations"}</h3>
           <div className="org-cards">
             {organizations.map((org) => (
               <div
@@ -71,7 +91,7 @@ const OrganizationSelector = ({ onSelect }) => {
         </div>
       )}
 
-      {showCreateForm ? (
+      {user?.role === "owner" && showCreateForm ? (
         <div className="org-create-form">
           <h3>{organizations.length > 0 ? "Create New Organization" : "Create Your First Organization"}</h3>
           <form onSubmit={handleCreate}>
@@ -119,7 +139,7 @@ const OrganizationSelector = ({ onSelect }) => {
           </form>
         </div>
       ) : (
-        organizations.length > 0 && (
+        user?.role === "owner" && organizations.length > 0 && (
           <button
             className="org-add-btn"
             onClick={() => setShowCreateForm(true)}

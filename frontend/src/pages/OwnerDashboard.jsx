@@ -26,6 +26,8 @@ import {
 } from "recharts";
 import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
 import OrganizationSelector from "../components/OrganizationSelector";
+import AdminManagement from "../components/AdminManagement";
+import EmployeeManagement from "../components/EmployeeManagement";
 import "../styles/dashboard.css";
 
 const OwnerDashboard = () => {
@@ -33,6 +35,7 @@ const OwnerDashboard = () => {
   const [darkMode, setDarkMode] = useState(false);
   const [currentOrganization, setCurrentOrganization] = useState(getCurrentOrganization());
   const [user, setUser] = useState(null);
+  const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, management
 
   // Hard-coded dashboard data (will be replaced with API calls later)
   const [dashboardData] = useState({
@@ -66,9 +69,9 @@ const OwnerDashboard = () => {
   const stockLevelPercentage = (dashboardData.stockLevels / dashboardData.maxStockCapacity) * 100;
 
   useEffect(() => {
-    // Check if user is logged in
+    // Check if user is logged in (owner or admin)
     const currentUser = getCurrentUser();
-    if (!currentUser || currentUser.role !== "owner") {
+    if (!currentUser || (currentUser.role !== "owner" && currentUser.role !== "admin")) {
       navigate("/login");
       return;
     }
@@ -77,6 +80,17 @@ const OwnerDashboard = () => {
     // Check if organization is selected
     const org = getCurrentOrganization();
     setCurrentOrganization(org);
+    
+    // For admins, they need to have their organization set
+    if (currentUser.role === "admin" && !org && currentUser.organizationId) {
+      // Try to find and set the organization
+      const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
+      const userOrg = organizations.find(o => o.id === currentUser.organizationId);
+      if (userOrg) {
+        setCurrentOrganization(userOrg);
+        localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
+      }
+    }
   }, [navigate]);
 
   const handleLogout = () => {
@@ -108,8 +122,8 @@ const OwnerDashboard = () => {
     }
   ];
 
-  // Show organization selector if no organization is selected
-  if (!currentOrganization) {
+  // Show organization selector if no organization is selected (only for owners)
+  if (!currentOrganization && user?.role === "owner") {
     return (
       <div className={`dashboard ${darkMode ? "dark" : ""}`}>
         <header className="dashboard-navbar">
@@ -138,6 +152,46 @@ const OwnerDashboard = () => {
     );
   }
 
+  // If admin has no organization, redirect to login
+  if (!currentOrganization && user?.role === "admin") {
+    handleLogout();
+    return null;
+  }
+
+  // Safety check: if no organization, show selector (shouldn't happen but just in case)
+  if (!currentOrganization) {
+    return (
+      <div className={`dashboard ${darkMode ? "dark" : ""}`}>
+        <header className="dashboard-navbar">
+          <div className="dashboard-logo-section">
+            <BarChart3 size={28} className="dashboard-logo-icon" />
+            <h1 className="dashboard-logo">Bizit</h1>
+            <span className="dashboard-role">{user?.role === "admin" ? "Admin" : "Owner"}</span>
+          </div>
+          <div className="dashboard-nav-actions">
+            <button
+              className="theme-toggle"
+              onClick={() => setDarkMode(!darkMode)}
+            >
+              {darkMode ? "☀️" : "🌙"}
+            </button>
+            <button className="logout-btn" onClick={handleLogout}>
+              <LogOut size={18} />
+              <span>Logout</span>
+            </button>
+          </div>
+        </header>
+        <main className="dashboard-main">
+          <OrganizationSelector onSelect={handleOrganizationSelect} />
+        </main>
+      </div>
+    );
+  }
+
+  const getRoleLabel = () => {
+    return user?.role === "admin" ? "Admin" : "Owner";
+  };
+
   return (
     <div className={`dashboard ${darkMode ? "dark" : ""}`}>
       {/* Navbar */}
@@ -147,9 +201,9 @@ const OwnerDashboard = () => {
           <h1 className="dashboard-logo">Bizit</h1>
           <div className="dashboard-org-info">
             <Building2 size={16} />
-            <span className="dashboard-org-name">{currentOrganization.name}</span>
+            <span className="dashboard-org-name">{currentOrganization?.name || "Unknown"}</span>
           </div>
-          <span className="dashboard-role">Owner</span>
+          <span className="dashboard-role">{getRoleLabel()}</span>
         </div>
         <div className="dashboard-nav-actions">
           <button
@@ -167,10 +221,47 @@ const OwnerDashboard = () => {
 
       {/* Dashboard Content */}
       <main className="dashboard-main">
-        <div className="dashboard-header">
-          <h2>Dashboard Overview</h2>
-          <p>Welcome back! Here's your business at a glance.</p>
+        {/* Tab Navigation */}
+        <div className="dashboard-tabs">
+          <button
+            className={`dashboard-tab ${activeTab === "dashboard" ? "active" : ""}`}
+            onClick={() => setActiveTab("dashboard")}
+          >
+            Dashboard
+          </button>
+          {user?.role === "owner" && (
+            <button
+              className={`dashboard-tab ${activeTab === "admins" ? "active" : ""}`}
+              onClick={() => setActiveTab("admins")}
+            >
+              Admin Management
+            </button>
+          )}
+          {user?.role === "admin" && (
+            <button
+              className={`dashboard-tab ${activeTab === "employees" ? "active" : ""}`}
+              onClick={() => setActiveTab("employees")}
+            >
+              Employee Management
+            </button>
+          )}
         </div>
+
+        {/* Management Sections */}
+        {activeTab === "admins" && user?.role === "owner" && (
+          <AdminManagement />
+        )}
+        {activeTab === "employees" && user?.role === "admin" && (
+          <EmployeeManagement />
+        )}
+
+        {/* Dashboard Content */}
+        {activeTab === "dashboard" && (
+          <>
+            <div className="dashboard-header">
+              <h2>Dashboard Overview</h2>
+              <p>Welcome back! Here's your business at a glance.</p>
+            </div>
 
         {/* Charts Section */}
         <div className="dashboard-charts">
@@ -349,6 +440,8 @@ const OwnerDashboard = () => {
             );
           })}
         </div>
+          </>
+        )}
       </main>
     </div>
   );

@@ -1,0 +1,441 @@
+/* =========================
+   MANAGEMENT SECTIONS
+========================= */
+
+.management-section {
+  background: var(--card);
+  border-radius: 22px;
+  padding: 32px;
+  margin-bottom: 32px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.management-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.management-title-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex: 1;
+}
+
+.management-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.dashboard.dark .management-icon {
+  color: #E9B3FB;
+}
+
+.management-title-section h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+  margin: 0 0 4px 0;
+  letter-spacing: -0.5px;
+}
+
+.dashboard.dark .management-title-section h2 {
+  color: #E9B3FB;
+}
+
+.management-title-section p {
+  font-size: 14px;
+  opacity: 0.75;
+  margin: 0;
+}
+
+.management-add-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(59, 2, 112, 0.3);
+  white-space: nowrap;
+}
+
+.management-add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(59, 2, 112, 0.4);
+}
+
+/* Form Card */
+.management-form-card {
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(111, 0, 255, 0.2);
+  border-radius: 18px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.dashboard.dark .management-form-card {
+  background: rgba(26, 1, 42, 0.6);
+  border-color: rgba(233, 179, 251, 0.2);
+}
+
+.management-form-card h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  margin: 0 0 20px 0;
+}
+
+.dashboard.dark .management-form-card h3 {
+  color: #E9B3FB;
+}
+
+.management-form-card .form-group {
+  margin-bottom: 18px;
+}
+
+.management-form-card label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--primary);
+  margin-bottom: 8px;
+}
+
+.dashboard.dark .management-form-card label {
+  color: #E9B3FB;
+}
+
+.management-form-card input,
+.management-form-card select {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: 2px solid rgba(111, 0, 255, 0.2);
+  outline: none;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text);
+  transition: all 0.3s ease;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.dashboard.dark .management-form-card input,
+.dashboard.dark .management-form-card select {
+  background: rgba(26, 1, 42, 0.6);
+  color: #f4eaff;
+  border-color: rgba(233, 179, 251, 0.2);
+}
+
+.management-form-card input:focus,
+.management-form-card select:focus {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 0 4px rgba(111, 0, 255, 0.1);
+}
+
+.dashboard.dark .management-form-card input:focus,
+.dashboard.dark .management-form-card select:focus {
+  background: rgba(26, 1, 42, 0.8);
+  box-shadow: 0 0 0 4px rgba(233, 179, 251, 0.15);
+}
+
+.form-submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(59, 2, 112, 0.3);
+  margin-top: 8px;
+}
+
+.form-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(59, 2, 112, 0.4);
+}
+
+/* Messages */
+.success-message,
+.error-message {
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.success-message {
+  background: rgba(16, 185, 129, 0.1);
+  color: #10B981;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.dashboard.dark .success-message {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.dashboard.dark .error-message {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+/* Management List */
+.management-list h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 20px;
+}
+
+.dashboard.dark .management-list h3 {
+  color: #E9B3FB;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  opacity: 0.6;
+}
+
+.empty-state svg {
+  color: var(--primary);
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.dashboard.dark .empty-state svg {
+  color: #E9B3FB;
+}
+
+.empty-state p {
+  font-size: 16px;
+  margin: 0;
+}
+
+.management-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* Management Cards */
+.management-card {
+  background: rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(111, 0, 255, 0.15);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.dashboard.dark .management-card {
+  background: rgba(26, 1, 42, 0.6);
+  border-color: rgba(233, 179, 251, 0.15);
+}
+
+.management-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgba(111, 0, 255, 0.2);
+}
+
+.management-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.management-card-icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.admin-icon {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+}
+
+.employee-icon {
+  background: linear-gradient(135deg, #10B981, #059669);
+}
+
+.employee-icon.stock {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+}
+
+.employee-icon.sales {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+}
+
+.management-card-icon-wrapper svg {
+  color: white;
+}
+
+.delete-btn {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #EF4444;
+  border-radius: 8px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  transform: scale(1.1);
+}
+
+.management-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.management-card-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.management-card-info svg {
+  color: var(--primary);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.dashboard.dark .management-card-info svg {
+  color: #E9B3FB;
+}
+
+.management-card-name {
+  font-weight: 700;
+  color: var(--primary);
+}
+
+.dashboard.dark .management-card-name {
+  color: #E9B3FB;
+}
+
+.management-card-department {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.management-card-department label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  opacity: 0.8;
+}
+
+.dashboard.dark .management-card-department label {
+  color: #E9B3FB;
+}
+
+.department-select {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(111, 0, 255, 0.2);
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dashboard.dark .department-select {
+  background: rgba(26, 1, 42, 0.6);
+  color: #f4eaff;
+  border-color: rgba(233, 179, 251, 0.2);
+}
+
+.department-select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(111, 0, 255, 0.1);
+}
+
+.management-card-meta {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(111, 0, 255, 0.1);
+}
+
+.dashboard.dark .management-card-meta {
+  border-top-color: rgba(233, 179, 251, 0.1);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .management-section {
+    padding: 24px 20px;
+  }
+
+  .management-header {
+    flex-direction: column;
+  }
+
+  .management-title-section {
+    width: 100%;
+  }
+
+  .management-add-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .management-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .management-card-department {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .department-select {
+    width: 100%;
+  }
+}
+

@@ -536,6 +536,61 @@
 }
 
 /* =========================
+   DASHBOARD TABS
+========================= */
+
+.dashboard-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  border-bottom: 2px solid rgba(111, 0, 255, 0.1);
+  padding-bottom: 0;
+}
+
+.dashboard.dark .dashboard-tabs {
+  border-bottom-color: rgba(233, 179, 251, 0.1);
+}
+
+.dashboard-tab {
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--primary);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  bottom: -2px;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+.dashboard.dark .dashboard-tab {
+  color: #E9B3FB;
+}
+
+.dashboard-tab:hover {
+  color: var(--accent);
+  background: rgba(111, 0, 255, 0.05);
+}
+
+.dashboard.dark .dashboard-tab:hover {
+  background: rgba(233, 179, 251, 0.05);
+}
+
+.dashboard-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 700;
+}
+
+.dashboard.dark .dashboard-tab.active {
+  color: #E9B3FB;
+  border-bottom-color: #E9B3FB;
+}
+
+/* =========================
    MOBILE
 ========================= */
 
@@ -612,6 +667,16 @@
 
   .logout-btn span {
     display: none;
+  }
+
+  .dashboard-tabs {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .dashboard-tab {
+    padding: 10px 16px;
+    font-size: 14px;
   }
 }
 
