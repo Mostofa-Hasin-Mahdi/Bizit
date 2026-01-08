@@ -229,7 +229,7 @@ const OwnerDashboard = () => {
         <div className="dashboard-nav-actions">
           <button
             className="theme-toggle"
-            onClick={() => setDarkMode(!darkMode)}
+            onClick={toggleDarkMode}
           >
             {darkMode ? "☀️" : "🌙"}
           </button>
