@@ -45,6 +45,11 @@ const AdminManagement = () => {
     setError("");
     setSuccess("");
 
+    if (!organization) {
+      setError("Please select an organization first");
+      return;
+    }
+
     if (!formData.username || !formData.email || !formData.password) {
       setError("All fields are required");
       return;
@@ -61,17 +66,26 @@ const AdminManagement = () => {
     }
 
     try {
-      createAdmin(
+      if (!organization || !organization.id) {
+        setError("Organization is required. Please select an organization first.");
+        return;
+      }
+      
+      const result = createAdmin(
         formData.username,
         formData.password,
         formData.email,
         organization.id
       );
-      setSuccess("Admin created successfully!");
-      setFormData({ username: "", email: "", password: "", confirmPassword: "" });
-      setShowCreateForm(false);
-      loadAdmins();
+      
+      if (result) {
+        setSuccess("Admin created successfully!");
+        setFormData({ username: "", email: "", password: "", confirmPassword: "" });
+        setShowCreateForm(false);
+        loadAdmins();
+      }
     } catch (err) {
+      console.error("Error creating admin:", err);
       setError(err.message || "Failed to create admin");
     }
   };

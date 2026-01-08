@@ -94,8 +94,13 @@ export const setCurrentOrganization = (organization) => {
 // Admin management (only owners can create/delete admins)
 export const createAdmin = (username, password, email, organizationId) => {
   const currentUser = getCurrentUser();
-  if (!currentUser || currentUser.role !== 'owner') {
-    throw new Error('Only owners can create admins');
+  if (!currentUser) {
+    throw new Error('User must be logged in to create admins');
+  }
+  // Check role (case-insensitive and trimmed for safety)
+  const userRole = currentUser.role?.toLowerCase()?.trim();
+  if (userRole !== 'owner') {
+    throw new Error(`Only owners can create admins. Current role: ${currentUser.role || 'undefined'}`);
   }
   
   const users = getUsers();
@@ -126,7 +131,11 @@ export const createAdmin = (username, password, email, organizationId) => {
 
 export const deleteAdmin = (adminId) => {
   const currentUser = getCurrentUser();
-  if (!currentUser || currentUser.role !== 'owner') {
+  if (!currentUser) {
+    throw new Error('User must be logged in to delete admins');
+  }
+  const userRole = currentUser.role?.toLowerCase()?.trim();
+  if (userRole !== 'owner') {
     throw new Error('Only owners can delete admins');
   }
   
@@ -150,7 +159,10 @@ export const getAdminsByOrganization = (organizationId) => {
 // Employee management (admins can create/delete employees)
 export const createEmployee = (username, password, email, department, organizationId) => {
   const currentUser = getCurrentUser();
-  if (!currentUser || currentUser.role !== 'admin' || currentUser.role !== 'owner') {
+  if (!currentUser) {
+    throw new Error('User must be logged in to create employees');
+  }
+  if (currentUser.role !== 'admin' && currentUser.role !== 'owner') {
     throw new Error('Only owners and admins can create employees');
   }
   
