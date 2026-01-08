@@ -150,8 +150,8 @@ export const getAdminsByOrganization = (organizationId) => {
 // Employee management (admins can create/delete employees)
 export const createEmployee = (username, password, email, department, organizationId) => {
   const currentUser = getCurrentUser();
-  if (!currentUser || currentUser.role !== 'admin') {
-    throw new Error('Only admins can create employees');
+  if (!currentUser || currentUser.role !== 'admin' || currentUser.role !== 'owner') {
+    throw new Error('Only owners and admins can create employees');
   }
   
   if (!['stock', 'sales'].includes(department)) {

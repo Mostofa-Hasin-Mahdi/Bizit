@@ -11,7 +11,8 @@ import {
   LogOut,
   BarChart3,
   Building2,
-  Eye
+  Eye,
+  ShoppingCart
 } from "lucide-react";
 import {
   LineChart,
@@ -292,13 +293,22 @@ const OwnerDashboard = () => {
                   <h2>Dashboard Overview</h2>
                   <p>Welcome back! Here's your business at a glance.</p>
                 </div>
-                <button
-                  className="stock-levels-btn"
-                  onClick={() => navigate("/dashboard/stock")}
-                >
-                  <Eye size={18} />
-                  <span>See Stock Levels</span>
-                </button>
+                <div className="dashboard-action-buttons">
+                  <button
+                    className="stock-levels-btn"
+                    onClick={() => navigate("/dashboard/stock")}
+                  >
+                    <Eye size={18} />
+                    <span>See Stock Levels</span>
+                  </button>
+                  <button
+                    className="sales-items-btn"
+                    onClick={() => navigate("/dashboard/sales")}
+                  >
+                    <ShoppingCart size={18} />
+                    <span>See Sales Items</span>
+                  </button>
+                </div>
               </div>
             </div>
 

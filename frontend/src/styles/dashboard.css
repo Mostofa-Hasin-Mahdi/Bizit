@@ -189,6 +189,12 @@
   flex-wrap: wrap;
 }
 
+.dashboard-action-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .stock-levels-btn {
   display: flex;
   align-items: center;
@@ -212,6 +218,32 @@
 }
 
 .stock-levels-btn svg {
+  flex-shrink: 0;
+}
+
+.sales-items-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+  white-space: nowrap;
+}
+
+.sales-items-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(245, 158, 11, 0.4);
+}
+
+.sales-items-btn svg {
   flex-shrink: 0;
 }
 
@@ -248,7 +280,13 @@
     align-items: flex-start;
   }
 
+  .dashboard-action-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
   .stock-levels-btn,
+  .sales-items-btn,
   .back-to-dashboard-btn {
     width: 100%;
     justify-content: center;

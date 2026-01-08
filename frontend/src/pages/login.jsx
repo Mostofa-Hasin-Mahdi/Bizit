@@ -73,8 +73,7 @@ export default function Login() {
         if (user.department === "stock") {
           navigate("/dashboard/stock");
         } else if (user.department === "sales") {
-          // Sales dashboard can be added later
-          navigate("/dashboard/owner");
+          navigate("/dashboard/sales");
         } else {
           navigate("/dashboard/owner");
         }
