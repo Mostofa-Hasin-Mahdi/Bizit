@@ -347,7 +347,6 @@
   font-size: 18px;
   opacity: 0.7;
 }
-
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .sales-overview {
@@ -377,9 +376,16 @@
     width: 100%;
   }
 
+  /* Fix search bar overflow */
   .search-container {
+    min-width: 0;      /* override fixed min-width */
     width: 100%;
     max-width: 100%;
+  }
+
+  .search-input {
+    width: 100%;
+    box-sizing: border-box; /* include padding in width */
   }
 
   .items-grid {
@@ -390,4 +396,3 @@
     padding: 16px;
   }
 }
-
