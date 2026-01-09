@@ -356,31 +356,31 @@ const OwnerDashboard = () => {
               <LineChart data={salesData}>
                 <CartesianGrid 
                   strokeDasharray="3 3" 
-                  stroke={darkMode ? "rgba(233, 179, 251, 0.1)" : "rgba(111, 0, 255, 0.1)"} 
+                  stroke={darkMode ? "rgba(96, 165, 250, 0.15)" : "rgba(2, 132, 199, 0.1)"} 
                 />
                 <XAxis 
                   dataKey="day" 
-                  stroke={darkMode ? "#f4eaff" : "#2b2b2b"}
+                  stroke={darkMode ? "#f1f5f9" : "#1e293b"}
                   style={{ fontSize: '12px' }}
                 />
                 <YAxis 
-                  stroke={darkMode ? "#f4eaff" : "#2b2b2b"}
+                  stroke={darkMode ? "#f1f5f9" : "#1e293b"}
                   style={{ fontSize: '12px' }}
                 />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: darkMode ? '#2a0144' : '#E9B3FB',
-                    border: `1px solid ${darkMode ? '#E9B3FB' : '#6F00FF'}`,
+                    backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
+                    border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
                     borderRadius: '12px',
-                    color: darkMode ? '#f4eaff' : '#2b2b2b'
+                    color: darkMode ? '#f1f5f9' : '#1e293b'
                   }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="sold" 
-                  stroke="#6F00FF" 
+                  stroke="#0284c7" 
                   strokeWidth={3}
-                  dot={{ fill: '#6F00FF', r: 5 }}
+                  dot={{ fill: '#0284c7', r: 5 }}
                   activeDot={{ r: 7 }}
                 />
               </LineChart>
@@ -437,17 +437,17 @@ const OwnerDashboard = () => {
                   </Pie>
                   <Tooltip 
                     contentStyle={{
-                      backgroundColor: darkMode ? '#2a0144' : '#E9B3FB',
-                      border: `1px solid ${darkMode ? '#E9B3FB' : '#6F00FF'}`,
+                      backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
+                      border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
                       borderRadius: '12px',
-                      color: darkMode ? '#f4eaff' : '#2b2b2b'
+                      color: darkMode ? '#f1f5f9' : '#1e293b'
                     }}
                     formatter={(value) => `$${value.toLocaleString()}`}
                   />
                   <Legend 
                     wrapperStyle={{ 
                       fontSize: '14px', 
-                      color: darkMode ? '#f4eaff' : '#2b2b2b' 
+                      color: darkMode ? '#f1f5f9' : '#1e293b' 
                     }}
                   />
                 </PieChart>

@@ -58,7 +58,7 @@
 }
 
 .dashboard.dark .stock-stat-content h3 {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .stock-stat-value {
@@ -70,7 +70,7 @@
 }
 
 .dashboard.dark .stock-stat-value {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 /* Stock Items Section */
@@ -99,7 +99,7 @@
 }
 
 .dashboard.dark .section-header h3 {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .add-item-btn {
@@ -115,12 +115,12 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(59, 2, 112, 0.3);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
 }
 
 .add-item-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(59, 2, 112, 0.4);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
 }
 
 /* Low Stock Alert */
@@ -154,12 +154,12 @@
 }
 
 .stock-items-table thead {
-  background: rgba(111, 0, 255, 0.1);
+  background: rgba(2, 132, 199, 0.1);
   border-radius: 12px;
 }
 
 .dashboard.dark .stock-items-table thead {
-  background: rgba(233, 179, 251, 0.1);
+  background: rgba(96, 165, 250, 0.15);
 }
 
 .stock-items-table th {
@@ -170,30 +170,30 @@
   color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid rgba(111, 0, 255, 0.2);
+  border-bottom: 2px solid rgba(2, 132, 199, 0.2);
 }
 
 .dashboard.dark .stock-items-table th {
-  color: #E9B3FB;
-  border-bottom-color: rgba(233, 179, 251, 0.2);
+  color: #60a5fa;
+  border-bottom-color: rgba(96, 165, 250, 0.2);
 }
 
 .stock-items-table td {
   padding: 16px;
-  border-bottom: 1px solid rgba(111, 0, 255, 0.1);
+  border-bottom: 1px solid rgba(2, 132, 199, 0.1);
   font-size: 14px;
 }
 
 .dashboard.dark .stock-items-table td {
-  border-bottom-color: rgba(233, 179, 251, 0.1);
+  border-bottom-color: rgba(96, 165, 250, 0.15);
 }
 
 .stock-items-table tbody tr:hover {
-  background: rgba(111, 0, 255, 0.05);
+  background: rgba(2, 132, 199, 0.05);
 }
 
 .dashboard.dark .stock-items-table tbody tr:hover {
-  background: rgba(233, 179, 251, 0.05);
+  background: rgba(96, 165, 250, 0.08);
 }
 
 .stock-items-table tbody tr.low-stock-row {
@@ -211,7 +211,7 @@
 }
 
 .dashboard.dark .item-name {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 /* Stock Quantity Display */
@@ -228,20 +228,20 @@
 }
 
 .dashboard.dark .quantity-value {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .stock-bar-container {
   flex: 1;
   height: 8px;
-  background: rgba(111, 0, 255, 0.1);
+  background: rgba(2, 132, 199, 0.1);
   border-radius: 4px;
   overflow: hidden;
   max-width: 150px;
 }
 
 .dashboard.dark .stock-bar-container {
-  background: rgba(233, 179, 251, 0.1);
+  background: rgba(96, 165, 250, 0.15);
 }
 
 .stock-bar {
@@ -270,7 +270,7 @@
 .edit-btn,
 .delete-btn {
   background: transparent;
-  border: 1px solid rgba(111, 0, 255, 0.2);
+  border: 1px solid rgba(2, 132, 199, 0.2);
   color: var(--primary);
   border-radius: 8px;
   padding: 6px 8px;
@@ -283,8 +283,8 @@
 
 .dashboard.dark .edit-btn,
 .dashboard.dark .delete-btn {
-  border-color: rgba(233, 179, 251, 0.2);
-  color: #E9B3FB;
+  border-color: rgba(96, 165, 250, 0.2);
+  color: #60a5fa;
 }
 
 .edit-btn:hover {

@@ -24,7 +24,7 @@
 
 /* Logo color in dark mode */
 .home.dark .logo {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .theme-toggle {
@@ -115,7 +115,7 @@
   background: linear-gradient(135deg, var(--accent), var(--primary));
   border-radius: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 10px 30px rgba(111, 0, 255, 0.3);
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.3);
   transition: transform 0.3s ease;
 }
 
@@ -138,7 +138,7 @@
 
 /* Dark mode title fix */
 .home.dark .auth-card h2 {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .auth-subtitle {
@@ -172,13 +172,13 @@
 }
 
 .home.dark .form-group label {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .form-group input {
   padding: 14px 18px;
   border-radius: 14px;
-  border: 2px solid rgba(111, 0, 255, 0.2);
+  border: 2px solid rgba(2, 132, 199, 0.2);
   outline: none;
   font-size: 15px;
   background: rgba(255, 255, 255, 0.8);
@@ -188,9 +188,9 @@
 }
 
 .home.dark .form-group input {
-  background: rgba(26, 1, 42, 0.6);
-  color: #f4eaff;
-  border-color: rgba(233, 179, 251, 0.2);
+  background: rgba(30, 41, 59, 0.6);
+  color: #f1f5f9;
+  border-color: rgba(96, 165, 250, 0.2);
 }
 
 .form-group input::placeholder {
@@ -198,19 +198,19 @@
 }
 
 .home.dark .form-group input::placeholder {
-  color: rgba(244, 234, 255, 0.5);
+  color: rgba(241, 245, 249, 0.5);
 }
 
 .form-group input:focus {
   border-color: var(--accent);
   background: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 0 4px rgba(111, 0, 255, 0.1);
+  box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.1);
   transform: translateY(-1px);
 }
 
 .home.dark .form-group input:focus {
-  background: rgba(26, 1, 42, 0.8);
-  box-shadow: 0 0 0 4px rgba(233, 179, 251, 0.15);
+  background: rgba(30, 41, 59, 0.8);
+  box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.15);
 }
 
 /* =========================
@@ -274,7 +274,7 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(59, 2, 112, 0.3);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3);
   letter-spacing: 0.3px;
   text-transform: uppercase;
   font-family: "Inter", system-ui, sans-serif;
@@ -282,7 +282,7 @@
 
 .auth-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 30px rgba(59, 2, 112, 0.4);
+  box-shadow: 0 12px 30px rgba(2, 132, 199, 0.4);
   background: linear-gradient(135deg, var(--accent), var(--primary));
 }
 
@@ -297,7 +297,7 @@
 .auth-footer {
   margin-top: 28px;
   padding-top: 24px;
-  border-top: 1px solid rgba(111, 0, 255, 0.15);
+  border-top: 1px solid rgba(2, 132, 199, 0.15);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -306,7 +306,7 @@
 }
 
 .home.dark .auth-footer {
-  border-top-color: rgba(233, 179, 251, 0.15);
+  border-top-color: rgba(96, 165, 250, 0.15);
 }
 
 .auth-footer span {

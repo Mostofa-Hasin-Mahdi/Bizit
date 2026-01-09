@@ -223,7 +223,7 @@ const SalesDashboard = () => {
             </div>
           </div>
           <div className="sales-stat-card">
-            <div className="sales-stat-icon" style={{ background: "linear-gradient(135deg, #6F00FF, #3B0270)" }}>
+            <div className="sales-stat-icon" style={{ background: "linear-gradient(135deg, #0284c7, #0f172a)" }}>
               <TrendingUp size={32} />
             </div>
             <div className="sales-stat-content">
@@ -246,23 +246,23 @@ const SalesDashboard = () => {
               <BarChart data={categoryData}>
                 <CartesianGrid 
                   strokeDasharray="3 3" 
-                  stroke={darkMode ? "rgba(233, 179, 251, 0.1)" : "rgba(111, 0, 255, 0.1)"} 
+                  stroke={darkMode ? "rgba(96, 165, 250, 0.15)" : "rgba(2, 132, 199, 0.1)"} 
                 />
                 <XAxis 
                   dataKey="name" 
-                  stroke={darkMode ? "#f4eaff" : "#2b2b2b"}
+                  stroke={darkMode ? "#f1f5f9" : "#1e293b"}
                   style={{ fontSize: '12px' }}
                 />
                 <YAxis 
-                  stroke={darkMode ? "#f4eaff" : "#2b2b2b"}
+                  stroke={darkMode ? "#f1f5f9" : "#1e293b"}
                   style={{ fontSize: '12px' }}
                 />
                 <Tooltip 
                   contentStyle={{
-                    backgroundColor: darkMode ? '#2a0144' : '#E9B3FB',
-                    border: `1px solid ${darkMode ? '#E9B3FB' : '#6F00FF'}`,
+                    backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
+                    border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
                     borderRadius: '12px',
-                    color: darkMode ? '#f4eaff' : '#2b2b2b'
+                    color: darkMode ? '#f1f5f9' : '#1e293b'
                   }}
                 />
                 <Bar dataKey="quantity" fill="#F59E0B" radius={[8, 8, 0, 0]} />

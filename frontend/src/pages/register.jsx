@@ -63,7 +63,7 @@ export default function Register() {
     <div className={`home ${darkMode ? "dark" : ""}`}>
       {/* Navbar */}
       <header className="navbar">
-        <div className="logo">Bizit</div>
+        <div className="logo">  <Link to="/" className="logo" style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>Bizit</Link></div>
         <button
           className="theme-toggle"
           onClick={toggleDarkMode}

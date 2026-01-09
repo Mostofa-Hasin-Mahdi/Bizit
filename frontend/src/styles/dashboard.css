@@ -3,12 +3,12 @@
 ========================= */
 
 .dashboard {
-  --bg: #FFF1F1;
-  --text: #2b2b2b;
-  --primary: #3B0270;
-  --accent: #6F00FF;
-  --card: #E9B3FB;
-  --card-text: #2b2b2b;
+  --bg: #ffffff;
+  --text: #1e293b;
+  --primary: #0f172a;
+  --accent: #0284c7;
+  --card: #f1f5f9;
+  --card-text: #1e293b;
 
   background: var(--bg);
   color: var(--text);
@@ -17,10 +17,10 @@
 }
 
 .dashboard.dark {
-  --bg: #12001f;
-  --text: #f4eaff;
-  --card: #2a0144;
-  --card-text: #f4eaff;
+  --bg: #0f172a;
+  --text: #f1f5f9;
+  --card: #1e293b;
+  --card-text: #f1f5f9;
 }
 
 /* =========================
@@ -55,7 +55,7 @@
 }
 
 .dashboard.dark .dashboard-logo-icon {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .dashboard-logo {
@@ -66,7 +66,7 @@
 }
 
 .dashboard.dark .dashboard-logo {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .dashboard-org-info {
@@ -74,7 +74,7 @@
   align-items: center;
   gap: 6px;
   padding: 4px 12px;
-  background: rgba(111, 0, 255, 0.1);
+  background: rgba(2, 132, 199, 0.1);
   border-radius: 12px;
   font-size: 12px;
   font-weight: 600;
@@ -82,8 +82,8 @@
 }
 
 .dashboard.dark .dashboard-org-info {
-  background: rgba(233, 179, 251, 0.1);
-  color: #E9B3FB;
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
 }
 
 .dashboard-org-info svg {
@@ -172,7 +172,7 @@
 }
 
 .dashboard.dark .dashboard-header h2 {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .dashboard-header p {
@@ -260,13 +260,13 @@
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(59, 2, 112, 0.3);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.3);
   white-space: nowrap;
 }
 
 .back-to-dashboard-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(59, 2, 112, 0.4);
+  box-shadow: 0 12px 30px rgba(2, 132, 199, 0.4);
 }
 
 .back-to-dashboard-btn svg {
@@ -338,7 +338,7 @@
 }
 
 .dashboard.dark .chart-icon {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .chart-title-section h3 {
@@ -349,7 +349,7 @@
 }
 
 .dashboard.dark .chart-title-section h3 {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .chart-total {
@@ -374,7 +374,7 @@
 }
 
 .dashboard.dark .stock-current {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .stock-max {
@@ -390,7 +390,7 @@
 .stock-level-bar-container {
   width: 100%;
   height: 50px;
-  background: rgba(111, 0, 255, 0.1);
+  background: rgba(2, 132, 199, 0.1);
   border-radius: 25px;
   overflow: hidden;
   position: relative;
@@ -398,7 +398,7 @@
 }
 
 .dashboard.dark .stock-level-bar-container {
-  background: rgba(233, 179, 251, 0.1);
+  background: rgba(96, 165, 250, 0.15);
 }
 
 .stock-level-bar {
@@ -411,7 +411,7 @@
   padding-right: 16px;
   transition: width 1s ease;
   position: relative;
-  box-shadow: 0 4px 15px rgba(111, 0, 255, 0.3);
+  box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
 }
 
 .stock-level-percentage {
@@ -480,11 +480,11 @@
   gap: 32px;
   margin-top: 20px;
   padding-top: 20px;
-  border-top: 1px solid rgba(111, 0, 255, 0.2);
+  border-top: 1px solid rgba(2, 132, 199, 0.2);
 }
 
 .dashboard.dark .pie-chart-stats {
-  border-top-color: rgba(233, 179, 251, 0.2);
+  border-top-color: rgba(96, 165, 250, 0.2);
 }
 
 .pie-stat {
@@ -526,7 +526,7 @@
 }
 
 .dashboard.dark .pie-stat-value {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .profit-stat .pie-stat-value {
@@ -618,7 +618,7 @@
 }
 
 .dashboard.dark .stat-title {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .stat-value {
@@ -630,7 +630,7 @@
 }
 
 .dashboard.dark .stat-value {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 /* Special styling for profit/loss */
@@ -655,12 +655,12 @@
   display: flex;
   gap: 12px;
   margin-bottom: 32px;
-  border-bottom: 2px solid rgba(111, 0, 255, 0.1);
+  border-bottom: 2px solid rgba(2, 132, 199, 0.1);
   padding-bottom: 0;
 }
 
 .dashboard.dark .dashboard-tabs {
-  border-bottom-color: rgba(233, 179, 251, 0.1);
+  border-bottom-color: rgba(96, 165, 250, 0.15);
 }
 
 .dashboard-tab {
@@ -679,16 +679,16 @@
 }
 
 .dashboard.dark .dashboard-tab {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .dashboard-tab:hover {
   color: var(--accent);
-  background: rgba(111, 0, 255, 0.05);
+  background: rgba(2, 132, 199, 0.05);
 }
 
 .dashboard.dark .dashboard-tab:hover {
-  background: rgba(233, 179, 251, 0.05);
+  background: rgba(96, 165, 250, 0.08);
 }
 
 .dashboard-tab.active {
@@ -698,8 +698,8 @@
 }
 
 .dashboard.dark .dashboard-tab.active {
-  color: #E9B3FB;
-  border-bottom-color: #E9B3FB;
+  color: #60a5fa;
+  border-bottom-color: #60a5fa;
 }
 
 /* =========================

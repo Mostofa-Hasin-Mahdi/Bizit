@@ -3,12 +3,12 @@
 ========================= */
 
 .home {
-  --bg: #FFF1F1;
-  --text: #2b2b2b;
-  --primary: #3B0270;
-  --accent: #6F00FF;
-  --card: #E9B3FB;
-  --card-text: #2b2b2b;
+  --bg: #ffffff;
+  --text: #1e293b;
+  --primary: #0f172a;
+  --accent: #0284c7;
+  --card: #f1f5f9;
+  --card-text: #1e293b;
 
   background: var(--bg);
   color: var(--text);
@@ -17,10 +17,10 @@
 }
 
 .home.dark {
-  --bg: #12001f;
-  --text: #f4eaff;
-  --card: #2a0144;
-  --card-text: #f4eaff;
+  --bg: #0f172a;
+  --text: #f1f5f9;
+  --card: #1e293b;
+  --card-text: #f1f5f9;
 }
 
 /* =========================
@@ -50,9 +50,9 @@ body {
   color: var(--primary);
 }
 
-/* 🔥 LOGO COLOR IN DARK MODE */
+/* Logo color in dark mode */
 .home.dark .logo {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .nav-actions {
@@ -108,11 +108,27 @@ body {
   margin-top: 24px;
   padding: 14px 30px;
   font-size: 16px;
-  background: var(--primary);
+  background: var(--accent);
   color: white;
   border: none;
   border-radius: 16px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.4);
+  background: #0369a1;
+}
+
+.home.dark .primary-btn {
+  background: #0284c7;
+}
+
+.home.dark .primary-btn:hover {
+  background: #0369a1;
 }
 
 /* =========================
@@ -174,9 +190,9 @@ body {
   margin-bottom: 14px;
 }
 
-/* 🔥 ICON COLOR IN DARK MODE */
+/* Icon color in dark mode */
 .home.dark .card-icon {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 .feature-card h3 {
@@ -185,9 +201,9 @@ body {
   margin-bottom: 10px;
 }
 
-/* 🔥 TITLE COLOR FIX FOR DARK MODE */
+/* Title color in dark mode */
 .home.dark .feature-card h3 {
-  color: #E9B3FB;
+  color: #60a5fa;
 }
 
 /* =========================
