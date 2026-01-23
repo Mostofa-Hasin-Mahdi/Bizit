@@ -306,3 +306,57 @@ export const deleteStockItem = async (itemId, token, orgId = null) => {
         throw error;
     }
 };
+
+// Sales Management APIs
+export const fetchSales = async (token, orgId = null) => {
+    try {
+        let url = `${API_URL}/sales/`;
+        if (orgId) {
+            url += `?org_id=${orgId}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch sales history');
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching sales:", error);
+        throw error;
+    }
+};
+
+export const recordSale = async (saleData, token, orgId = null) => {
+    try {
+        let url = `${API_URL}/sales/`;
+        if (orgId) {
+            url += `?org_id=${orgId}`;
+        }
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(saleData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Failed to record sale');
+        }
+
+        return await response.json();
+    } catch (error) {
+        throw error;
+    }
+};
