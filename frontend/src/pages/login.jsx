@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
-import { authenticateUser, setCurrentUser } from "../utils/storage";
+import { loginUser } from "../utils/api";
+import { setCurrentUser, setCurrentOrganization } from "../utils/storage";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import "../styles/login.css";
 
@@ -36,52 +37,62 @@ export default function Login() {
     setSuccessMessage(""); // Clear success message on input change
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
 
-    // Authenticate user
-    const user = authenticateUser(formData.username, formData.password);
-    
-    if (user) {
+    try {
+      const { user } = await loginUser({
+        username: formData.username,
+        password: formData.password
+      });
+
       // Store user info in localStorage
       setCurrentUser(user);
-      
-      // For admins, set their organization automatically
-      if (user.role === "admin" && user.organizationId) {
-        const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
-        const userOrg = organizations.find(o => o.id === user.organizationId);
-        if (userOrg) {
-          localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
+
+      // Update organizations list in localStorage to include the backend-provided org
+      if (user.org_id) {
+        const orgInfo = {
+          id: user.org_id,
+          name: user.org_name || "My Organization",
+          ownerId: user.id // Essential for Owner Selector to find it
+        };
+
+        const currentOrgs = JSON.parse(localStorage.getItem('organizations') || '[]');
+        const orgExists = currentOrgs.find(o => o.id === user.org_id);
+
+        if (!orgExists) {
+          currentOrgs.push(orgInfo);
+          localStorage.setItem('organizations', JSON.stringify(currentOrgs));
+        }
+
+        // Only auto-select organization for Admins and Employees
+        // Owners will see the Selector screen 
+        if (user.role !== "owner") {
+          setCurrentOrganization(orgInfo);
+          console.log("DEBUG: Set organization", orgInfo);
         }
       }
-      
+
       // Redirect based on role
       if (user.role === "owner" || user.role === "admin") {
+        console.log("DEBUG: Redirecting to owner dashboard");
         navigate("/dashboard/owner");
       } else if (user.role === "employee") {
-        // Set organization for employees
-        if (user.organizationId) {
-          const organizations = JSON.parse(localStorage.getItem('organizations') || '[]');
-          const userOrg = organizations.find(o => o.id === user.organizationId);
-          if (userOrg) {
-            localStorage.setItem('currentOrganization', JSON.stringify(userOrg));
-          }
-        }
-        // Redirect based on department
-        if (user.department === "stock") {
-          navigate("/dashboard/stock");
-        } else if (user.department === "sales") {
+        if (user.department === "sales") {
+          console.log("DEBUG: Redirecting to sales dashboard");
           navigate("/dashboard/sales");
         } else {
-          navigate("/dashboard/owner");
+          console.log("DEBUG: Redirecting to stock dashboard");
+          navigate("/dashboard/stock");
         }
       } else {
+        console.log("DEBUG: Stay on login");
         navigate("/login");
       }
-    } else {
-      setError("Invalid username or password");
+    } catch (err) {
+      setError(err.message || "Invalid username or password");
     }
   };
 

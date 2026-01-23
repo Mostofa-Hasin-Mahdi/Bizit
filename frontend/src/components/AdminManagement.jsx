@@ -1,11 +1,7 @@
 import { useState, useEffect } from "react";
 import { UserCog, Plus, Trash2, Mail, User } from "lucide-react";
-import { 
-  getAdminsByOrganization, 
-  createAdmin, 
-  deleteAdmin, 
-  getCurrentOrganization 
-} from "../utils/storage";
+import { getCurrentOrganization } from "../utils/storage";
+import { createUser, getUsersByRole, deleteUser } from "../utils/api";
 import "../styles/management.css";
 
 const AdminManagement = () => {
@@ -19,31 +15,29 @@ const AdminManagement = () => {
     confirmPassword: ""
   });
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const loadAdmins = () => {
+  const loadAdmins = async () => {
     if (organization) {
-      const orgAdmins = getAdminsByOrganization(organization.id);
-      setAdmins(orgAdmins);
+      try {
+        const token = localStorage.getItem('token');
+        const orgAdmins = await getUsersByRole("admin", token, organization.id);
+        setAdmins(orgAdmins);
+      } catch (err) {
+        console.error("Failed to load admins:", err);
+      }
     }
   };
 
   useEffect(() => {
     if (!organization) return;
-    
-    // Use setTimeout to defer state update and avoid synchronous setState warning
-    const timer = setTimeout(() => {
-      const orgAdmins = getAdminsByOrganization(organization.id);
-      setAdmins(orgAdmins);
-    }, 0);
-    
-    return () => clearTimeout(timer);
+    loadAdmins();
   }, [organization]);
 
-  const handleCreate = (e) => {
+  const handleCreate = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
+    setSuccessMessage("");
 
     if (!organization) {
       setError("Please select an organization first");
@@ -66,37 +60,32 @@ const AdminManagement = () => {
     }
 
     try {
-      if (!organization || !organization.id) {
-        setError("Organization is required. Please select an organization first.");
-        return;
-      }
-      
-      const result = createAdmin(
-        formData.username,
-        formData.password,
-        formData.email,
-        organization.id
-      );
-      
-      if (result) {
-        setSuccess("Admin created successfully!");
-        setFormData({ username: "", email: "", password: "", confirmPassword: "" });
-        setShowCreateForm(false);
-        loadAdmins();
-      }
+      const token = localStorage.getItem('token');
+      await createUser({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        full_name: formData.username
+      }, "admin", token, organization.id);
+
+      setSuccess("Admin created successfully!");
+      setFormData({ username: "", email: "", password: "", confirmPassword: "" });
+      setShowCreateForm(false);
+      loadAdmins();
     } catch (err) {
       console.error("Error creating admin:", err);
       setError(err.message || "Failed to create admin");
     }
   };
 
-  const handleDelete = (adminId) => {
+  const handleDelete = async (adminId) => {
     if (!window.confirm("Are you sure you want to delete this admin?")) {
       return;
     }
 
     try {
-      deleteAdmin(adminId);
+      const token = localStorage.getItem('token');
+      await deleteUser(adminId, token);
       setSuccess("Admin deleted successfully!");
       loadAdmins();
     } catch (err) {
@@ -127,7 +116,7 @@ const AdminManagement = () => {
         </button>
       </div>
 
-      {success && <div className="success-message">{success}</div>}
+      {successMessage && <div className="success-message">{successMessage}</div>}
       {error && <div className="error-message">{error}</div>}
 
       {showCreateForm && (
@@ -218,7 +207,7 @@ const AdminManagement = () => {
                     <span>{admin.email}</span>
                   </div>
                   <div className="management-card-meta">
-                    Created: {new Date(admin.createdAt).toLocaleDateString()}
+                    Created: {new Date(admin.created_at).toLocaleDateString()}
                   </div>
                 </div>
               </div>
@@ -231,4 +220,3 @@ const AdminManagement = () => {
 };
 
 export default AdminManagement;
-

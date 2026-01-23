@@ -27,7 +27,8 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { getCurrentUser, getCurrentOrganization, logout as logoutUser, getAdminsByOrganization, getEmployeesByOrganization } from "../utils/storage";
+import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
+import { fetchStock, getUsersByRole } from "../utils/api";
 import OrganizationSelector from "../components/OrganizationSelector";
 import AdminManagement from "../components/AdminManagement";
 import EmployeeManagement from "../components/EmployeeManagement";
@@ -42,10 +43,15 @@ const OwnerDashboard = () => {
   const [numAdmins, setNumAdmins] = useState(0);
   const [numEmployees, setNumEmployees] = useState(0);
 
+  // Real Dashboard Data State
+  const [stockStats, setStockStats] = useState({
+    currentLevel: 0,
+    maxCapacity: 0,
+    totalValue: 0
+  });
+
   // Hard-coded dashboard data (will be replaced with API calls later)
   const [dashboardData] = useState({
-    stockLevels: 1247,
-    maxStockCapacity: 2000,
     totalSold: 45230,
     totalProfit: 18500,
     totalLoss: 3200
@@ -69,7 +75,9 @@ const OwnerDashboard = () => {
   ];
 
   // Calculate stock level percentage
-  const stockLevelPercentage = (dashboardData.stockLevels / dashboardData.maxStockCapacity) * 100;
+  const stockLevelPercentage = stockStats.maxCapacity > 0
+    ? (stockStats.currentLevel / stockStats.maxCapacity) * 100
+    : 0;
 
   useEffect(() => {
     // Check if user is logged in (owner or admin)
@@ -79,11 +87,11 @@ const OwnerDashboard = () => {
       return;
     }
     setUser(currentUser);
-    
+
     // Check if organization is selected
     const org = getCurrentOrganization();
     setCurrentOrganization(org);
-    
+
     // For admins, they need to have their organization set
     if (currentUser.role === "admin" && !org && currentUser.organizationId) {
       // Try to find and set the organization
@@ -101,17 +109,37 @@ const OwnerDashboard = () => {
     if (!currentOrganization) {
       setNumAdmins(0);
       setNumEmployees(0);
+      setStockStats({ currentLevel: 0, maxCapacity: 0, totalValue: 0 });
       return;
     }
 
-    const timer = setTimeout(() => {
-      const admins = getAdminsByOrganization(currentOrganization.id);
-      const employees = getEmployeesByOrganization(currentOrganization.id);
-      setNumAdmins(admins.length);
-      setNumEmployees(employees.length);
-    }, 0);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const orgId = currentOrganization.id;
 
-    return () => clearTimeout(timer);
+        // Fetch Stock
+        const stockItems = await fetchStock(token, orgId);
+        const currentLevel = stockItems.reduce((sum, item) => sum + item.quantity, 0);
+        const maxCapacity = stockItems.reduce((sum, item) => sum + item.max_capacity, 0);
+        const totalValue = stockItems.reduce((sum, item) => sum + (item.quantity * (item.price || 0)), 0);
+
+        setStockStats({ currentLevel, maxCapacity, totalValue });
+
+        // Fetch Admins
+        const admins = await getUsersByRole("admin", token, orgId);
+        setNumAdmins(admins.length);
+
+        // Fetch Employees
+        const employees = await getUsersByRole("employee", token, orgId);
+        setNumEmployees(employees.length);
+
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      }
+    };
+
+    fetchData();
   }, [currentOrganization, activeTab]);
 
   const handleLogout = () => {
@@ -312,183 +340,183 @@ const OwnerDashboard = () => {
               </div>
             </div>
 
-        {/* Charts Section */}
-        <div className="dashboard-charts">
-          {/* Stock Levels Chart */}
-          <div className="chart-card">
-            <div className="chart-header">
-              <div className="chart-title-section">
-                <Package size={24} className="chart-icon" />
-                <h3>Stock Levels</h3>
-              </div>
-              <div className="stock-level-info">
-                <span className="stock-current">{dashboardData.stockLevels.toLocaleString()}</span>
-                <span className="stock-max">/ {dashboardData.maxStockCapacity.toLocaleString()}</span>
-              </div>
-            </div>
-            <div className="stock-level-chart">
-              <div className="stock-level-bar-container">
-                <div 
-                  className="stock-level-bar" 
-                  style={{ width: `${stockLevelPercentage}%` }}
-                >
-                  <span className="stock-level-percentage">{stockLevelPercentage.toFixed(1)}%</span>
-                </div>
-              </div>
-              <div className="stock-level-labels">
-                <span>Low</span>
-                <span>Medium</span>
-                <span>High</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Total Sold Chart */}
-          <div className="chart-card">
-            <div className="chart-header">
-              <div className="chart-title-section">
-                <DollarSign size={24} className="chart-icon" />
-                <h3>Total Sold (Last 7 Days)</h3>
-              </div>
-              <span className="chart-total">${dashboardData.totalSold.toLocaleString()}</span>
-            </div>
-            <ResponsiveContainer width="100%" height={250}>
-              <LineChart data={salesData}>
-                <CartesianGrid 
-                  strokeDasharray="3 3" 
-                  stroke={darkMode ? "rgba(96, 165, 250, 0.15)" : "rgba(2, 132, 199, 0.1)"} 
-                />
-                <XAxis 
-                  dataKey="day" 
-                  stroke={darkMode ? "#f1f5f9" : "#1e293b"}
-                  style={{ fontSize: '12px' }}
-                />
-                <YAxis 
-                  stroke={darkMode ? "#f1f5f9" : "#1e293b"}
-                  style={{ fontSize: '12px' }}
-                />
-                <Tooltip 
-                  contentStyle={{
-                    backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
-                    border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
-                    borderRadius: '12px',
-                    color: darkMode ? '#f1f5f9' : '#1e293b'
-                  }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="sold" 
-                  stroke="#0284c7" 
-                  strokeWidth={3}
-                  dot={{ fill: '#0284c7', r: 5 }}
-                  activeDot={{ r: 7 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-
-          {/* Profit/Loss Pie Chart */}
-          <div className="chart-card">
-            <div className="chart-header">
-              <div className="chart-title-section">
-                <TrendingUp size={24} className="chart-icon" />
-                <h3>Profit vs Loss</h3>
-              </div>
-            </div>
-            <div className="pie-chart-container">
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart margin={{ top: 20, right: 40, bottom: 20, left: 40 }}>
-                  <Pie
-                    data={profitLossData}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={true}
-                    label={({ name, percent, cx, cy, midAngle, innerRadius, outerRadius, index }) => {
-                      const RADIAN = Math.PI / 180;
-                      // Position labels outside the circle
-                      const radius = outerRadius + 20;
-                      const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                      const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                      
-                      // Use color palette - profit is green, loss is red
-                      const labelColor = index === 0 ? '#10B981' : '#EF4444';
-                      
-                      return (
-                        <text 
-                          x={x} 
-                          y={y} 
-                          fill={labelColor}
-                          textAnchor={x > cx ? 'start' : 'end'} 
-                          dominantBaseline="central"
-                          fontSize={12}
-                          fontWeight={700}
-                        >
-                          {`${name}: ${(percent * 100).toFixed(1)}%`}
-                        </text>
-                      );
-                    }}
-                    outerRadius={70}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {profitLossData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip 
-                    contentStyle={{
-                      backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
-                      border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
-                      borderRadius: '12px',
-                      color: darkMode ? '#f1f5f9' : '#1e293b'
-                    }}
-                    formatter={(value) => `$${value.toLocaleString()}`}
-                  />
-                  <Legend 
-                    wrapperStyle={{ 
-                      fontSize: '14px', 
-                      color: darkMode ? '#f1f5f9' : '#1e293b' 
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="pie-chart-stats">
-                <div className="pie-stat profit-stat">
-                  <TrendingUp size={20} />
-                  <div>
-                    <span className="pie-stat-label">Profit</span>
-                    <span className="pie-stat-value">${dashboardData.totalProfit.toLocaleString()}</span>
+            {/* Charts Section */}
+            <div className="dashboard-charts">
+              {/* Stock Levels Chart */}
+              <div className="chart-card">
+                <div className="chart-header">
+                  <div className="chart-title-section">
+                    <Package size={24} className="chart-icon" />
+                    <h3>Stock Levels</h3>
+                  </div>
+                  <div className="stock-level-info">
+                    <span className="stock-current">{stockStats.currentLevel.toLocaleString()}</span>
+                    <span className="stock-max">/ {stockStats.maxCapacity.toLocaleString()}</span>
                   </div>
                 </div>
-                <div className="pie-stat loss-stat">
-                  <TrendingDown size={20} />
-                  <div>
-                    <span className="pie-stat-label">Loss</span>
-                    <span className="pie-stat-value">${dashboardData.totalLoss.toLocaleString()}</span>
+                <div className="stock-level-chart">
+                  <div className="stock-level-bar-container">
+                    <div
+                      className="stock-level-bar"
+                      style={{ width: `${stockLevelPercentage}%` }}
+                    >
+                      <span className="stock-level-percentage">{stockLevelPercentage.toFixed(1)}%</span>
+                    </div>
+                  </div>
+                  <div className="stock-level-labels">
+                    <span>Low</span>
+                    <span>Medium</span>
+                    <span>High</span>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* User Stats Section */}
-        <div className="dashboard-stats">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <div key={stat.id} className="stat-card">
-                <div className="stat-icon-wrapper" style={{ background: stat.bgGradient }}>
-                  <Icon size={32} className="stat-icon" />
+              {/* Total Sold Chart */}
+              <div className="chart-card">
+                <div className="chart-header">
+                  <div className="chart-title-section">
+                    <DollarSign size={24} className="chart-icon" />
+                    <h3>Total Sold (Last 7 Days)</h3>
+                  </div>
+                  <span className="chart-total">${dashboardData.totalSold.toLocaleString()}</span>
                 </div>
-                <div className="stat-content">
-                  <h3 className="stat-title">{stat.title}</h3>
-                  <p className="stat-value">{stat.value}</p>
+                <ResponsiveContainer width="100%" height={250}>
+                  <LineChart data={salesData}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={darkMode ? "rgba(96, 165, 250, 0.15)" : "rgba(2, 132, 199, 0.1)"}
+                    />
+                    <XAxis
+                      dataKey="day"
+                      stroke={darkMode ? "#f1f5f9" : "#1e293b"}
+                      style={{ fontSize: '12px' }}
+                    />
+                    <YAxis
+                      stroke={darkMode ? "#f1f5f9" : "#1e293b"}
+                      style={{ fontSize: '12px' }}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
+                        border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
+                        borderRadius: '12px',
+                        color: darkMode ? '#f1f5f9' : '#1e293b'
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="sold"
+                      stroke="#0284c7"
+                      strokeWidth={3}
+                      dot={{ fill: '#0284c7', r: 5 }}
+                      activeDot={{ r: 7 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* Profit/Loss Pie Chart */}
+              <div className="chart-card">
+                <div className="chart-header">
+                  <div className="chart-title-section">
+                    <TrendingUp size={24} className="chart-icon" />
+                    <h3>Profit vs Loss</h3>
+                  </div>
+                </div>
+                <div className="pie-chart-container">
+                  <ResponsiveContainer width="100%" height={250}>
+                    <PieChart margin={{ top: 20, right: 40, bottom: 20, left: 40 }}>
+                      <Pie
+                        data={profitLossData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={true}
+                        label={({ name, percent, cx, cy, midAngle, innerRadius, outerRadius, index }) => {
+                          const RADIAN = Math.PI / 180;
+                          // Position labels outside the circle
+                          const radius = outerRadius + 20;
+                          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                          const y = cy + radius * Math.sin(-midAngle * RADIAN);
+
+                          // Use color palette - profit is green, loss is red
+                          const labelColor = index === 0 ? '#10B981' : '#EF4444';
+
+                          return (
+                            <text
+                              x={x}
+                              y={y}
+                              fill={labelColor}
+                              textAnchor={x > cx ? 'start' : 'end'}
+                              dominantBaseline="central"
+                              fontSize={12}
+                              fontWeight={700}
+                            >
+                              {`${name}: ${(percent * 100).toFixed(1)}%`}
+                            </text>
+                          );
+                        }}
+                        outerRadius={70}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {profitLossData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
+                          border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
+                          borderRadius: '12px',
+                          color: darkMode ? '#f1f5f9' : '#1e293b'
+                        }}
+                        formatter={(value) => `$${value.toLocaleString()}`}
+                      />
+                      <Legend
+                        wrapperStyle={{
+                          fontSize: '14px',
+                          color: darkMode ? '#f1f5f9' : '#1e293b'
+                        }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="pie-chart-stats">
+                    <div className="pie-stat profit-stat">
+                      <TrendingUp size={20} />
+                      <div>
+                        <span className="pie-stat-label">Profit</span>
+                        <span className="pie-stat-value">${dashboardData.totalProfit.toLocaleString()}</span>
+                      </div>
+                    </div>
+                    <div className="pie-stat loss-stat">
+                      <TrendingDown size={20} />
+                      <div>
+                        <span className="pie-stat-label">Loss</span>
+                        <span className="pie-stat-value">${dashboardData.totalLoss.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            );
-          })}
-        </div>
+            </div>
+
+            {/* User Stats Section */}
+            <div className="dashboard-stats">
+              {stats.map((stat) => {
+                const Icon = stat.icon;
+                return (
+                  <div key={stat.id} className="stat-card">
+                    <div className="stat-icon-wrapper" style={{ background: stat.bgGradient }}>
+                      <Icon size={32} className="stat-icon" />
+                    </div>
+                    <div className="stat-content">
+                      <h3 className="stat-title">{stat.title}</h3>
+                      <p className="stat-value">{stat.value}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </>
         )}
       </main>

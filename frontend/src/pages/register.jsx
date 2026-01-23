@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { UserPlus } from "lucide-react";
-import { createUser } from "../utils/storage";
+import { registerUser } from "../utils/api";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import "../styles/login.css";
 
@@ -26,7 +26,7 @@ export default function Register() {
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -48,11 +48,16 @@ export default function Register() {
 
     try {
       // Create user account
-      createUser(formData.username, formData.password, formData.email);
-      
+      await registerUser({
+        username: formData.username,
+        email: formData.email,
+        password: formData.password,
+        full_name: formData.username // Default full name to username for now
+      });
+
       // Redirect to login
-      navigate("/login", { 
-        state: { message: "Account created successfully! Please login." } 
+      navigate("/login", {
+        state: { message: "Account created successfully! Please login." }
       });
     } catch (err) {
       setError(err.message || "Failed to create account");
@@ -160,4 +165,3 @@ export default function Register() {
     </div>
   );
 }
-

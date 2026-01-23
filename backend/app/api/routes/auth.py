@@ -43,11 +43,14 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserResponse:
     return UserResponse(
         id=user.id,
         org_id=user.org_id,
+        org_name=user.org_name,
         email=user.email,
         username=user.username,
         full_name=user.full_name,
         is_active=user.is_active,
-        created_at=user.created_at
+        created_at=user.created_at,
+        role=user.role,
+        department=user.department
     )
 
 
@@ -82,7 +85,8 @@ async def register(user_data: UserRegister):
             username=user.username,
             full_name=user.full_name,
             is_active=user.is_active,
-            created_at=user.created_at
+            created_at=user.created_at,
+            role=user.role
         )
     
     except HTTPException:

@@ -1,29 +1,44 @@
 import { useState, useEffect } from "react";
 import { Building2, Plus, Check } from "lucide-react";
-import { getUserOrganizations, createOrganization, setCurrentOrganization, getCurrentUser, getOrganizations } from "../utils/storage";
+import { setCurrentOrganization, getCurrentUser } from "../utils/storage";
+import { fetchOrganizations, createOrganizationApi } from "../utils/api";
 import "../styles/organization.css";
 
 const OrganizationSelector = ({ onSelect }) => {
   const user = getCurrentUser();
-  const [organizations, setOrganizations] = useState(() => {
-    if (user?.role === "owner") {
-      return getUserOrganizations(user?.id || "");
-    } else if (user?.role === "admin" && user?.organizationId) {
-      // Admins see only their assigned organization
-      const allOrgs = getOrganizations();
-      const userOrg = allOrgs.find(o => o.id === user.organizationId);
-      return userOrg ? [userOrg] : [];
-    }
-    return [];
-  });
-  const [showCreateForm, setShowCreateForm] = useState(organizations.length === 0);
+  const [organizations, setOrganizations] = useState([]);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     description: ""
   });
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const handleCreate = (e) => {
+  useEffect(() => {
+    const loadOrgs = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const orgs = await fetchOrganizations(token);
+          setOrganizations(orgs);
+          // Update local storage backup
+          localStorage.setItem('organizations', JSON.stringify(orgs));
+
+          if (orgs.length === 0 && user?.role === "owner") {
+            setShowCreateForm(true);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to load organizations", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadOrgs();
+  }, [user]);
+
+  const handleCreate = async (e) => {
     e.preventDefault();
     setError("");
 
@@ -33,8 +48,16 @@ const OrganizationSelector = ({ onSelect }) => {
     }
 
     try {
-      const newOrg = createOrganization(formData.name, formData.description);
-      setOrganizations([...organizations, newOrg]);
+      const token = localStorage.getItem('token');
+      const newOrg = await createOrganizationApi({
+        name: formData.name,
+        description: formData.description
+      }, token);
+
+      const updatedOrgs = [...organizations, newOrg];
+      setOrganizations(updatedOrgs);
+      localStorage.setItem('organizations', JSON.stringify(updatedOrgs));
+
       setFormData({ name: "", description: "" });
       setShowCreateForm(false);
       // Auto-select the newly created organization
@@ -51,13 +74,12 @@ const OrganizationSelector = ({ onSelect }) => {
 
   useEffect(() => {
     // Auto-select organization for admins
-    if (user?.role === "admin" && organizations.length === 1) {
+    if (user?.role === "admin" && organizations.length === 1 && !loading) {
       const org = organizations[0];
-      setCurrentOrganization(org);
-      onSelect(org);
+      handleSelect(org);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, organizations.length]);
+  }, [user, organizations.length, loading]);
 
   return (
     <div className="organization-selector">
@@ -139,13 +161,13 @@ const OrganizationSelector = ({ onSelect }) => {
           </form>
         </div>
       ) : (
-        user?.role === "owner" && organizations.length > 0 && (
+        user?.role === "owner" && (
           <button
             className="org-add-btn"
             onClick={() => setShowCreateForm(true)}
           >
             <Plus size={18} />
-            Create New Organization
+            {organizations.length === 0 ? "Create Your First Organization" : "Create New Organization"}
           </button>
         )
       )}

@@ -56,3 +56,16 @@ CREATE TABLE IF NOT EXISTS user_departments (
   PRIMARY KEY (user_id, department_id)
 );
 
+
+-- Create stock_items table
+CREATE TABLE IF NOT EXISTS stock_items (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id) ON DELETE CASCADE,
+  name VARCHAR(100) NOT NULL,
+  category VARCHAR(50) NOT NULL,
+  quantity INT DEFAULT 0,
+  min_threshold INT DEFAULT 10,
+  max_capacity INT DEFAULT 100,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);

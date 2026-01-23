@@ -18,7 +18,9 @@ class User:
         full_name: Optional[str] = None,
         is_active: bool = True,
         created_at: Optional[datetime] = None,
-        role: Optional[str] = None
+        role: Optional[str] = None,
+        org_name: Optional[str] = None,
+        department: Optional[str] = None
     ):
         self.id = id
         self.org_id = org_id
@@ -29,6 +31,8 @@ class User:
         self.is_active = is_active
         self.created_at = created_at or datetime.utcnow()
         self.role = role
+        self.org_name = org_name
+        self.department = department
     
     @classmethod
     def from_dict(cls, data: dict):
@@ -42,7 +46,9 @@ class User:
             full_name=data.get('full_name'),
             is_active=data.get('is_active', True),
             created_at=data.get('created_at'),
-            role=data.get('role')
+            role=data.get('role'),
+            org_name=data.get('org_name'),
+            department=data.get('department')
         )
 
     
@@ -56,7 +62,9 @@ class User:
             'full_name': self.full_name,
             'is_active': self.is_active,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'role': self.role
+            'role': self.role,
+            'org_name': self.org_name,
+            'department': self.department
         }
 
         if not exclude_password:
