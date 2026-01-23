@@ -28,7 +28,7 @@ import {
   Legend
 } from "recharts";
 import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
-import { fetchStock, getUsersByRole } from "../utils/api";
+import { fetchStock, getUsersByRole, fetchSales } from "../utils/api";
 import OrganizationSelector from "../components/OrganizationSelector";
 import AdminManagement from "../components/AdminManagement";
 import EmployeeManagement from "../components/EmployeeManagement";
@@ -50,23 +50,17 @@ const OwnerDashboard = () => {
     totalValue: 0
   });
 
+  // Real Dashboard Data State
+  const [salesStats, setSalesStats] = useState({
+    totalSold: 0,
+    chartData: []
+  });
+
   // Hard-coded dashboard data (will be replaced with API calls later)
   const [dashboardData] = useState({
-    totalSold: 45230,
     totalProfit: 18500,
     totalLoss: 3200
   });
-
-  // Sample data for total sold chart (last 7 days)
-  const salesData = [
-    { day: "Mon", sold: 5200 },
-    { day: "Tue", sold: 6800 },
-    { day: "Wed", sold: 6100 },
-    { day: "Thu", sold: 7500 },
-    { day: "Fri", sold: 8200 },
-    { day: "Sat", sold: 6900 },
-    { day: "Sun", sold: 5530 }
-  ];
 
   // Data for profit/loss pie chart
   const profitLossData = [
@@ -121,10 +115,48 @@ const OwnerDashboard = () => {
         // Fetch Stock
         const stockItems = await fetchStock(token, orgId);
         const currentLevel = stockItems.reduce((sum, item) => sum + item.quantity, 0);
-        const maxCapacity = stockItems.reduce((sum, item) => sum + item.max_capacity, 0);
+        const maxCapacity = stockItems.reduce((sum, item) => sum + (item.max_capacity || 100), 0); // fallback if max_capacity missing
         const totalValue = stockItems.reduce((sum, item) => sum + (item.quantity * (item.price || 0)), 0);
 
         setStockStats({ currentLevel, maxCapacity, totalValue });
+
+        // Fetch Sales
+        const sales = await fetchSales(token, orgId);
+
+        // Process Sales (Last 7 Days)
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        const recentSales = sales.filter(sale => new Date(sale.sale_date) >= sevenDaysAgo);
+        const totalSold = recentSales.reduce((sum, sale) => sum + sale.total_price, 0);
+
+        // Process options for Chart (Group by Day)
+        const salesByDate = {};
+        // Initialize last 7 days with 0
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(d.getDate() - i);
+          const dateStr = d.toLocaleDateString('en-US', { weekday: 'short' }); // Mon, Tue...
+          salesByDate[dateStr] = 0;
+        }
+
+        // Fill with actual data
+        recentSales.forEach(sale => {
+          const dateStr = new Date(sale.sale_date).toLocaleDateString('en-US', { weekday: 'short' });
+          if (salesByDate.hasOwnProperty(dateStr)) {
+            salesByDate[dateStr] += sale.total_price;
+          }
+        });
+
+        const chartData = Object.entries(salesByDate).map(([day, sold]) => ({
+          day,
+          sold
+        }));
+
+        setSalesStats({
+          totalSold,
+          chartData
+        });
 
         // Fetch Admins
         const admins = await getUsersByRole("admin", token, orgId);
@@ -378,10 +410,10 @@ const OwnerDashboard = () => {
                     <DollarSign size={24} className="chart-icon" />
                     <h3>Total Sold (Last 7 Days)</h3>
                   </div>
-                  <span className="chart-total">${dashboardData.totalSold.toLocaleString()}</span>
+                  <span className="chart-total">${salesStats.totalSold.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 <ResponsiveContainer width="100%" height={250}>
-                  <LineChart data={salesData}>
+                  <LineChart data={salesStats.chartData}>
                     <CartesianGrid
                       strokeDasharray="3 3"
                       stroke={darkMode ? "rgba(96, 165, 250, 0.15)" : "rgba(2, 132, 199, 0.1)"}
