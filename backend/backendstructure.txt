@@ -1,0 +1,77 @@
+backend/
+│
+├── app/
+│   ├── main.py                # App entry point
+│
+│   ├── core/                  # Core system logic
+│   │   ├── config.py          # Env variables
+│   │   ├── database.py        # DB session setup
+│   │   ├── security.py        # JWT, hashing
+│   │   └── dependencies.py    # Auth & RBAC deps
+│
+│   ├── models/                # 🔹 M (Models)
+│   │   ├── base.py
+│   │   ├── user.py
+│   │   ├── organization.py
+│   │   ├── department.py
+│   │   ├── product.py
+│   │   ├── supplier.py
+│   │   ├── purchase.py
+│   │   ├── sale.py
+│   │   ├── inventory.py
+│   │   ├── expense.py
+│   │   └── analytics.py
+│
+│   ├── schemas/               # Request/Response schemas
+│   │   ├── auth.py
+│   │   ├── user.py
+│   │   ├── organization.py
+│   │   ├── product.py
+│   │   ├── supplier.py
+│   │   ├── purchase.py
+│   │   ├── sale.py
+│   │   ├── expense.py
+│   │   └── analytics.py
+│
+│   ├── services/              # 🔹 Business logic layer
+│   │   ├── auth_service.py
+│   │   ├── user_service.py
+│   │   ├── inventory_service.py
+│   │   ├── sales_service.py
+│   │   ├── purchase_service.py
+│   │   ├── supplier_service.py
+│   │   ├── analytics_service.py
+│   │   └── eoq_service.py
+│
+│   ├── api/                   # 🔹 C (Controllers)
+│   │   ├── deps.py
+│   │   ├── routes/
+│   │   │   ├── auth.py
+│   │   │   ├── users.py
+│   │   │   ├── organizations.py
+│   │   │   ├── departments.py
+│   │   │   ├── products.py
+│   │   │   ├── suppliers.py
+│   │   │   ├── purchases.py
+│   │   │   ├── sales.py
+│   │   │   ├── inventory.py
+│   │   │   ├── expenses.py
+│   │   │   └── analytics.py
+│   │
+│   │   └── router.py           # API router include
+│
+│   ├── utils/                 # Helpers
+│   │   ├── permissions.py
+│   │   ├── calculations.py    # EOQ, ITR, margins
+│   │   └── constants.py
+│
+│   └── tests/                 # Unit tests
+│       ├── test_auth.py
+│       ├── test_inventory.py
+│       └── test_analytics.py
+│
+├── alembic/                   # DB migrations
+│
+├── .env
+├── requirements.txt
+└── README.md

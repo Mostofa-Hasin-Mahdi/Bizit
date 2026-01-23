@@ -1,0 +1,135 @@
+Bizit has the following features 
+
+EOQ Model
+Calculates the Economic Order Quantity to minimize total inventory costs by optimizing order size and reorder timing.
+
+Inventory Turnover Ratio Analyzer
+Evaluates how efficiently inventory is sold and replenished over a given period, helping businesses identify slow-moving stock.
+
+Profit Margin Analyzer
+Tracks profitability per product or category and highlights items with the highest and lowest returns.
+
+Profit & Loss (P&L) Dashboard
+Displays total revenue, expenses, and net profit with visual reports for better financial understanding.
+
+Supplier Performance Tracker
+Evaluates supplier reliability based on delivery speed, quality, and price stability, providing performance-based supplier scores.
+
+Expense & Cash Flow System 
+Allows users to log expenses, track income, and manage customer/supplier dues while generating cash flow reports and automated payment reminders.
+
+the SQL code to achieve the all analytics for the backend is as follows:
+
+CREATE TABLE organizations (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  created_by INT REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id) ON DELETE CASCADE,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  full_name VARCHAR(100),
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+--- RBAC(ROLE BASED ACCESS CONTROl)
+CREATE TABLE roles (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) UNIQUE NOT NULL
+);
+
+CREATE TABLE user_roles (
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  role_id INT REFERENCES roles(id),
+  PRIMARY KEY (user_id, role_id)
+);
+
+CREATE TABLE departments (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id) ON DELETE CASCADE,
+  name VARCHAR(50) NOT NULL,
+  created_by INT REFERENCES users(id),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE user_departments (
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  department_id INT REFERENCES departments(id) ON DELETE CASCADE,
+  PRIMARY KEY (user_id, department_id)
+);
+
+CREATE TABLE sales (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id),
+  department_id INT REFERENCES departments(id),
+  customer_id INT REFERENCES customers(id),
+  user_id INT REFERENCES users(id),
+  invoice_no VARCHAR(50),
+  total_amount NUMERIC(12,2),
+  date DATE DEFAULT CURRENT_DATE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE inventory_movements (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id),
+  department_id INT REFERENCES departments(id),
+  product_id INT REFERENCES products(id),
+  user_id INT REFERENCES users(id),
+  type VARCHAR(20),
+  quantity NUMERIC(12,3),
+  unit_cost NUMERIC(12,2),
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE expenses (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id),
+  department_id INT REFERENCES departments(id),
+  user_id INT REFERENCES users(id),
+  category VARCHAR(50),
+  description TEXT,
+  amount NUMERIC(12,2),
+  date DATE DEFAULT CURRENT_DATE,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE supplier_metrics (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id),
+  supplier_id INT REFERENCES suppliers(id),
+  period DATE,
+  on_time_pct NUMERIC(5,2),
+  avg_delivery_days NUMERIC(5,2),
+  defect_rate NUMERIC(5,2),
+  total_purchases NUMERIC(12,2),
+  score NUMERIC(5,2),
+  calculated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE analytics_cache (
+  id SERIAL PRIMARY KEY,
+  org_id INT REFERENCES organizations(id),
+  metric VARCHAR(50),
+  value NUMERIC(14,4),
+  calculated_at TIMESTAMP DEFAULT NOW(),
+  calculated_by INT REFERENCES users(id)
+);
+
+
+Access Rules
+
+OWNER → everything in org
+
+ADMIN → manage users, departments, ops
+
+EMPLOYEE → only assigned department actions
+
+Every record belongs to one organization
+
+Users can’t cross orgs or departments accidentally
