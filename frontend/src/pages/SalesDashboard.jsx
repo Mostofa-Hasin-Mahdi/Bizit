@@ -198,6 +198,39 @@ const SalesDashboard = () => {
           </span>
         </div>
         <div className="dashboard-nav-actions">
+          {(user?.role === "owner" || user?.role === "admin") && (
+            <button
+              className="nav-action-btn"
+              onClick={() => navigate("/dashboard/owner")}
+              title="Back to Dashboard"
+            >
+              <ArrowLeft size={18} />
+              <span className="nav-btn-text">Back</span>
+            </button>
+          )}
+
+          <div className="nav-tabs">
+            <button
+              className={`nav-tab-btn ${activeTab === 'catalog' ? 'active' : ''}`}
+              onClick={() => setActiveTab('catalog')}
+            >
+              <LayoutGrid size={16} />
+              <span>Catalog</span>
+            </button>
+            <button
+              className={`nav-tab-btn ${activeTab === 'history' ? 'active' : ''}`}
+              onClick={() => setActiveTab('history')}
+            >
+              <History size={16} />
+              <span>History</span>
+            </button>
+          </div>
+
+          <button className="new-sale-btn" onClick={handleRecordNewSale}>
+            <Plus size={18} />
+            <span>New Sale</span>
+          </button>
+
           <button className="theme-toggle" onClick={toggleDarkMode}>
             {darkMode ? "☀️" : "🌙"}
           </button>
@@ -215,57 +248,6 @@ const SalesDashboard = () => {
             <div>
               <h2>Sales Dashboard</h2>
               <p>Manage sales and view history</p>
-            </div>
-            <div className="dashboard-action-buttons">
-              {(user?.role === "owner" || user?.role === "admin") && (
-                <button
-                  className="back-to-dashboard-btn"
-                  onClick={() => navigate("/dashboard/owner")}
-                >
-                  <ArrowLeft size={18} />
-                  <span>Back</span>
-                </button>
-              )}
-              <div className="tab-buttons" style={{ display: 'flex', gap: '10px', background: 'var(--bg-secondary)', padding: '5px', borderRadius: '8px', marginRight: '10px' }}>
-                <button
-                  className={`tab-btn ${activeTab === 'catalog' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('catalog')}
-                  style={{
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    background: activeTab === 'catalog' ? 'var(--primary)' : 'transparent',
-                    color: activeTab === 'catalog' ? 'white' : 'var(--text-secondary)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                >
-                  <LayoutGrid size={16} /> Catalog
-                </button>
-                <button
-                  className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}
-                  onClick={() => setActiveTab('history')}
-                  style={{
-                    border: 'none',
-                    padding: '8px 16px',
-                    borderRadius: '6px',
-                    background: activeTab === 'history' ? 'var(--primary)' : 'transparent',
-                    color: activeTab === 'history' ? 'white' : 'var(--text-secondary)',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px'
-                  }}
-                >
-                  <History size={16} /> History
-                </button>
-              </div>
-              <button className="record-sale-btn" onClick={handleRecordNewSale}>
-                <Plus size={18} />
-                New Sale
-              </button>
             </div>
           </div>
         </div>

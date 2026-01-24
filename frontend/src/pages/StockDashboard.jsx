@@ -208,6 +208,24 @@ const StockDashboard = () => {
           </span>
         </div>
         <div className="dashboard-nav-actions">
+          {(user?.role === "owner" || user?.role === "admin") && (
+            <button
+              className="nav-action-btn"
+              onClick={() => navigate("/dashboard/owner")}
+              title="Back to Dashboard"
+            >
+              <ArrowLeft size={18} />
+              <span className="nav-btn-text">Back</span>
+            </button>
+          )}
+          <button
+            className="nav-action-btn supplier-btn"
+            onClick={() => navigate("/dashboard/suppliers")}
+            title="Supplier Portal"
+          >
+            <Truck size={18} />
+            <span className="nav-btn-text">Suppliers</span>
+          </button>
           <button className="theme-toggle" onClick={toggleDarkMode}>
             {darkMode ? "☀️" : "🌙"}
           </button>
@@ -226,23 +244,6 @@ const StockDashboard = () => {
               <h2>Stock Management Dashboard</h2>
               <p>Monitor and manage your inventory levels</p>
             </div>
-            {(user?.role === "owner" || user?.role === "admin") && (
-              <button
-                className="back-to-dashboard-btn"
-                onClick={() => navigate("/dashboard/owner")}
-              >
-                <ArrowLeft size={18} />
-                <span>Back to Dashboard</span>
-              </button>
-            )}
-            <button
-              className="back-to-dashboard-btn" // Reusing style
-              onClick={() => navigate("/dashboard/suppliers")}
-              style={{ marginLeft: '10px', background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}
-            >
-              <Truck size={18} />
-              <span>Supplier Portal</span>
-            </button>
           </div>
         </div>
 
