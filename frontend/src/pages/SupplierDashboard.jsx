@@ -14,7 +14,10 @@ import {
     LogOut,
     ArrowLeft,
     Star,
-    ClipboardCheck
+    ClipboardCheck,
+    X,
+    UserPlus,
+    Box
 } from "lucide-react";
 import {
     LineChart,
@@ -356,15 +359,25 @@ const SupplierDashboard = () => {
             {isSupplierModalOpen && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <h3>Add New Supplier</h3>
-                        <form onSubmit={handleCreateSupplier}>
-                            <div className="form-group"><label>Name</label><input required value={newSupplier.name} onChange={e => setNewSupplier({ ...newSupplier, name: e.target.value })} /></div>
-                            <div className="form-group"><label>Phone</label><input value={newSupplier.phone} onChange={e => setNewSupplier({ ...newSupplier, phone: e.target.value })} /></div>
-                            <div className="form-group"><label>Email</label><input value={newSupplier.email} onChange={e => setNewSupplier({ ...newSupplier, email: e.target.value })} /></div>
-                            <div className="form-group"><label>Address</label><input value={newSupplier.address} onChange={e => setNewSupplier({ ...newSupplier, address: e.target.value })} /></div>
+                        <div className="modal-header">
+                            <div className="modal-title">
+                                <UserPlus size={24} />
+                                <h2>Add New Supplier</h2>
+                            </div>
+                            <button className="modal-close-btn" onClick={() => setIsSupplierModalOpen(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleCreateSupplier} className="modal-form">
+                            <div className="form-group"><label>Name</label><input required value={newSupplier.name} onChange={e => setNewSupplier({ ...newSupplier, name: e.target.value })} placeholder="Supplier Name" /></div>
+                            <div className="form-row">
+                                <div className="form-group"><label>Phone</label><input value={newSupplier.phone} onChange={e => setNewSupplier({ ...newSupplier, phone: e.target.value })} placeholder="+1..." /></div>
+                                <div className="form-group"><label>Email</label><input value={newSupplier.email} onChange={e => setNewSupplier({ ...newSupplier, email: e.target.value })} placeholder="contact@..." /></div>
+                            </div>
+                            <div className="form-group"><label>Address</label><input value={newSupplier.address} onChange={e => setNewSupplier({ ...newSupplier, address: e.target.value })} placeholder="Full Address" /></div>
                             <div className="modal-actions">
                                 <button type="button" className="cancel-btn" onClick={() => setIsSupplierModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="save-btn">Save</button>
+                                <button type="submit" className="save-btn">Save Supplier</button>
                             </div>
                         </form>
                     </div>
@@ -374,8 +387,16 @@ const SupplierDashboard = () => {
             {isShipmentModalOpen && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <h3>Create Shipment</h3>
-                        <form onSubmit={handleCreateShipment}>
+                        <div className="modal-header">
+                            <div className="modal-title">
+                                <Box size={24} />
+                                <h2>Create Shipment</h2>
+                            </div>
+                            <button className="modal-close-btn" onClick={() => setIsShipmentModalOpen(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleCreateShipment} className="modal-form">
                             <div className="form-group">
                                 <label>Supplier</label>
                                 <select required value={newShipment.supplier_id} onChange={e => setNewShipment({ ...newShipment, supplier_id: e.target.value })}>
@@ -383,12 +404,14 @@ const SupplierDashboard = () => {
                                     {suppliers.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                                 </select>
                             </div>
-                            <div className="form-group"><label>Expected Qty</label><input type="number" required value={newShipment.expected_quantity} onChange={e => setNewShipment({ ...newShipment, expected_quantity: parseInt(e.target.value) })} /></div>
-                            <div className="form-group"><label>Expected Date</label><input type="date" required value={newShipment.expected_date} onChange={e => setNewShipment({ ...newShipment, expected_date: e.target.value })} /></div>
-                            <div className="form-group"><label>Notes</label><textarea value={newShipment.notes} onChange={e => setNewShipment({ ...newShipment, notes: e.target.value })} /></div>
+                            <div className="form-row">
+                                <div className="form-group"><label>Expected Qty</label><input type="number" required value={newShipment.expected_quantity} onChange={e => setNewShipment({ ...newShipment, expected_quantity: parseInt(e.target.value) })} /></div>
+                                <div className="form-group"><label>Expected Date</label><input type="date" required value={newShipment.expected_date} onChange={e => setNewShipment({ ...newShipment, expected_date: e.target.value })} /></div>
+                            </div>
+                            <div className="form-group"><label>Notes</label><textarea value={newShipment.notes} onChange={e => setNewShipment({ ...newShipment, notes: e.target.value })} placeholder="Optional notes..." rows={3} /></div>
                             <div className="modal-actions">
                                 <button type="button" className="cancel-btn" onClick={() => setIsShipmentModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="save-btn">Create</button>
+                                <button type="submit" className="save-btn">Create Shipment</button>
                             </div>
                         </form>
                     </div>
@@ -398,11 +421,21 @@ const SupplierDashboard = () => {
             {isRatingModalOpen && (
                 <div className="modal-overlay">
                     <div className="modal-content">
-                        <h3>Rate & Receive Shipment</h3>
-                        <p>Expected: {selectedShipment?.expected_quantity}</p>
-                        <form onSubmit={handleRateShipment}>
-                            <div className="form-group"><label>Received Quantity</label><input type="number" required value={ratingData.received_quantity} onChange={e => setRatingData({ ...ratingData, received_quantity: parseInt(e.target.value) })} /></div>
-                            <div className="form-group"><label>Damaged Quantity</label><input type="number" required value={ratingData.damaged_quantity} onChange={e => setRatingData({ ...ratingData, damaged_quantity: parseInt(e.target.value) })} /></div>
+                        <div className="modal-header">
+                            <div className="modal-title">
+                                <ClipboardCheck size={24} />
+                                <h2>Rate Shipment</h2>
+                            </div>
+                            <button className="modal-close-btn" onClick={() => setIsRatingModalOpen(false)}>
+                                <X size={24} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleRateShipment} className="modal-form">
+                            <p style={{ margin: '0 0 10px 0', opacity: 0.7 }}>Expected Quantity: <strong>{selectedShipment?.expected_quantity}</strong></p>
+                            <div className="form-row">
+                                <div className="form-group"><label>Received Quantity</label><input type="number" required value={ratingData.received_quantity} onChange={e => setRatingData({ ...ratingData, received_quantity: parseInt(e.target.value) })} /></div>
+                                <div className="form-group"><label>Damaged Quantity</label><input type="number" required value={ratingData.damaged_quantity} onChange={e => setRatingData({ ...ratingData, damaged_quantity: parseInt(e.target.value) })} /></div>
+                            </div>
                             <div className="modal-actions">
                                 <button type="button" className="cancel-btn" onClick={() => setIsRatingModalOpen(false)}>Cancel</button>
                                 <button type="submit" className="save-btn">Submit Rating</button>
