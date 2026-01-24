@@ -15,10 +15,10 @@ def get_stock_status(quantity: int, min_threshold: int, max_capacity: int) -> st
 def create_stock_item(item_data: StockItemCreate, org_id: int) -> StockItemResponse:
     with get_db_cursor() as cursor:
         cursor.execute("""
-            INSERT INTO stock_items (org_id, name, category, quantity, min_threshold, max_capacity, price)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-            RETURNING id, org_id, name, category, quantity, min_threshold, max_capacity, price, created_at, updated_at
-        """, (org_id, item_data.name, item_data.category, item_data.quantity, item_data.min_threshold, item_data.max_capacity, item_data.price))
+            INSERT INTO stock_items (org_id, name, category, quantity, min_threshold, max_capacity, price, cost_price)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            RETURNING id, org_id, name, category, quantity, min_threshold, max_capacity, price, cost_price, created_at, updated_at
+        """, (org_id, item_data.name, item_data.category, item_data.quantity, item_data.min_threshold, item_data.max_capacity, item_data.price, item_data.cost_price))
         
         row = cursor.fetchone()
         if not row:
@@ -35,6 +35,7 @@ def create_stock_item(item_data: StockItemCreate, org_id: int) -> StockItemRespo
             min_threshold=row['min_threshold'],
             max_capacity=row['max_capacity'],
             price=float(row['price']),
+            cost_price=float(row['cost_price']),
             status=status,
             created_at=row['created_at'],
             updated_at=row['updated_at']
@@ -43,7 +44,7 @@ def create_stock_item(item_data: StockItemCreate, org_id: int) -> StockItemRespo
 def get_stock_items(org_id: int) -> List[StockItemResponse]:
     with get_db_cursor() as cursor:
         cursor.execute("""
-            SELECT id, org_id, name, category, quantity, min_threshold, max_capacity, price, created_at, updated_at
+            SELECT id, org_id, name, category, quantity, min_threshold, max_capacity, price, cost_price, created_at, updated_at
             FROM stock_items
             WHERE org_id = %s
             ORDER BY created_at DESC
@@ -62,6 +63,7 @@ def get_stock_items(org_id: int) -> List[StockItemResponse]:
                 min_threshold=row['min_threshold'],
                 max_capacity=row['max_capacity'],
                 price=float(row['price']),
+                cost_price=float(row['cost_price']),
                 status=status,
                 created_at=row['created_at'],
                 updated_at=row['updated_at']
@@ -91,6 +93,9 @@ def update_stock_item(item_id: int, item_data: StockItemUpdate, org_id: int) -> 
     if item_data.price is not None:
         updates.append("price = %s")
         values.append(item_data.price)
+    if item_data.cost_price is not None:
+        updates.append("cost_price = %s")
+        values.append(item_data.cost_price)
         
     if not updates:
         return None
@@ -103,7 +108,7 @@ def update_stock_item(item_id: int, item_data: StockItemUpdate, org_id: int) -> 
         UPDATE stock_items
         SET {', '.join(updates)}
         WHERE id = %s AND org_id = %s
-        RETURNING id, org_id, name, category, quantity, min_threshold, max_capacity, price, created_at, updated_at
+        RETURNING id, org_id, name, category, quantity, min_threshold, max_capacity, price, cost_price, created_at, updated_at
     """
     
     with get_db_cursor() as cursor:
@@ -124,6 +129,7 @@ def update_stock_item(item_id: int, item_data: StockItemUpdate, org_id: int) -> 
             min_threshold=row['min_threshold'],
             max_capacity=row['max_capacity'],
             price=float(row['price']),
+            cost_price=float(row['cost_price']),
             status=status,
             created_at=row['created_at'],
             updated_at=row['updated_at']

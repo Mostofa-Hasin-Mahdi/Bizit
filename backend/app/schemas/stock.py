@@ -9,6 +9,7 @@ class StockItemBase(BaseModel):
     min_threshold: int = 10
     max_capacity: int = 100
     price: float = 0.0
+    cost_price: float = 0.0
 
 class StockItemCreate(StockItemBase):
     pass
@@ -20,6 +21,7 @@ class StockItemUpdate(BaseModel):
     min_threshold: Optional[int] = None
     max_capacity: Optional[int] = None
     price: Optional[float] = None
+    cost_price: Optional[float] = None
 
 class StockItemResponse(StockItemBase):
     id: int

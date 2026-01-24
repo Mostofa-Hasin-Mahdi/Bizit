@@ -22,6 +22,7 @@ const StockItemModal = ({ isOpen, onClose, onItemSaved, editItem = null, orgId }
                 category: editItem.category,
                 quantity: editItem.quantity,
                 price: editItem.price || 0,
+                cost_price: editItem.cost_price || 0,
                 min_threshold: editItem.min_threshold,
                 max_capacity: editItem.max_capacity
             });
@@ -31,6 +32,7 @@ const StockItemModal = ({ isOpen, onClose, onItemSaved, editItem = null, orgId }
                 category: "Components",
                 quantity: 0,
                 price: 0,
+                cost_price: 0,
                 min_threshold: 10,
                 max_capacity: 100
             });
@@ -102,13 +104,24 @@ const StockItemModal = ({ isOpen, onClose, onItemSaved, editItem = null, orgId }
                     </div>
 
                     <div className="form-group">
-                        <label>Price per Unit ($)</label>
+                        <label>Selling Price ($)</label>
                         <input
                             type="number"
                             min="0"
                             step="0.01"
                             value={formData.price}
                             onChange={(e) => setFormData({ ...formData, price: parseFloat(e.target.value) || 0 })}
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label>Cost Price ($) <small>(For Profit Calc)</small></label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={formData.cost_price}
+                            onChange={(e) => setFormData({ ...formData, cost_price: parseFloat(e.target.value) || 0 })}
                         />
                     </div>
 

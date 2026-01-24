@@ -4,14 +4,17 @@ import { useDarkMode } from "../contexts/DarkModeContext";
 import {
   Package,
   AlertTriangle,
-  TrendingUp,
+  Search,
+  Plus,
+  Filter,
   LogOut,
   BarChart3,
   Building2,
-  Plus,
-  Edit,
+  Edit2,
   Trash2,
-  ArrowLeft
+  ArrowLeft,
+  AlertOctagon,
+  TrendingUp
 } from "lucide-react";
 import {
   LineChart,
@@ -27,6 +30,7 @@ import {
 import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
 import { fetchStock, deleteStockItem } from "../utils/api";
 import StockItemModal from "../components/StockItemModal";
+import ReportLossModal from "../components/ReportLossModal";
 import "../styles/dashboard.css";
 import "../styles/stock-dashboard.css";
 
@@ -44,6 +48,10 @@ const StockDashboard = () => {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+
+  // Loss Reporting State
+  const [isLossModalOpen, setIsLossModalOpen] = useState(false);
+  const [itemForLoss, setItemForLoss] = useState(null);
 
   useEffect(() => {
     const currentUser = getCurrentUser();
@@ -116,6 +124,11 @@ const StockDashboard = () => {
     setIsModalOpen(true);
   };
 
+  const handleReportLoss = (item) => {
+    setItemForLoss(item);
+    setIsLossModalOpen(true);
+  };
+
   const handleDelete = async (itemId) => {
     if (!window.confirm("Are you sure you want to delete this item?")) return;
     try {
@@ -170,6 +183,14 @@ const StockDashboard = () => {
         onItemSaved={loadStockItems}
         editItem={editingItem}
         orgId={currentOrganization.id}
+      />
+
+      <ReportLossModal
+        isOpen={isLossModalOpen}
+        onClose={() => setIsLossModalOpen(false)}
+        stockItem={itemForLoss}
+        onLossReported={loadStockItems}
+        orgId={currentOrganization?.id}
       />
 
       {/* Navbar */}
@@ -366,7 +387,15 @@ const StockDashboard = () => {
                         <td>
                           <div className="action-buttons">
                             <button className="edit-btn" title="Edit" onClick={() => handleEdit(item)}>
-                              <Edit size={16} />
+                              <Edit2 size={16} />
+                            </button>
+                            <button
+                              className="delete-btn"
+                              title="Report Loss"
+                              onClick={() => handleReportLoss(item)}
+                              style={{ background: '#FEE2E2', color: '#EF4444' }}
+                            >
+                              <AlertOctagon size={16} />
                             </button>
                             <button className="delete-btn" title="Delete" onClick={() => handleDelete(item.id)}>
                               <Trash2 size={16} />

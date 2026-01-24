@@ -195,56 +195,42 @@
   flex-wrap: wrap;
 }
 
-.stock-levels-btn {
+.stock-levels-btn,
+.sales-items-btn,
+.profit-loss-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #3B82F6, #2563EB);
-  color: white;
-  border: none;
-  border-radius: 14px;
-  font-size: 15px;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
   font-weight: 700;
+  transition: all 0.2s;
+  border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-  white-space: nowrap;
+  color: white;
+  font-size: 0.9rem;
 }
 
-.stock-levels-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(59, 130, 246, 0.4);
-}
-
-.stock-levels-btn svg {
-  flex-shrink: 0;
+.stock-levels-btn {
+  background: linear-gradient(135deg, #3B82F6, #2563EB);
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
 }
 
 .sales-items-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
   background: linear-gradient(135deg, #F59E0B, #D97706);
-  color: white;
-  border: none;
-  border-radius: 14px;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
-  white-space: nowrap;
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.2);
 }
 
-.sales-items-btn:hover {
+.profit-loss-btn {
+  background: linear-gradient(135deg, #10B981, #059669);
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.2);
+}
+
+.stock-levels-btn:hover,
+.sales-items-btn:hover,
+.profit-loss-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(245, 158, 11, 0.4);
-}
-
-.sales-items-btn svg {
-  flex-shrink: 0;
+  filter: brightness(110%);
 }
 
 .back-to-dashboard-btn {
@@ -798,4 +784,3 @@
     justify-content: flex-end;
   }
 }
-

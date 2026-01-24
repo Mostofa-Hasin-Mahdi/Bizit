@@ -360,3 +360,51 @@ export const recordSale = async (saleData, token, orgId = null) => {
         throw error;
     }
 };
+
+// Analytics & Loss APIs
+export const fetchAnalyticsSummary = async (token, orgId = null) => {
+    try {
+        let url = `${API_URL}/analytics/summary`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch analytics');
+        return await response.json();
+    } catch (error) { throw error; }
+};
+
+export const fetchLosses = async (token, orgId = null) => {
+    try {
+        let url = `${API_URL}/analytics/losses`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch losses');
+        return await response.json();
+    } catch (error) { throw error; }
+};
+
+export const reportLoss = async (lossData, token, orgId = null) => {
+    try {
+        let url = `${API_URL}/analytics/loss`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(lossData)
+        });
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.detail || 'Failed to report loss');
+        }
+        return await response.json();
+    } catch (error) { throw error; }
+};

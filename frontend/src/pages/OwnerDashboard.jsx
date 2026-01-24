@@ -28,7 +28,7 @@ import {
   Legend
 } from "recharts";
 import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
-import { fetchStock, getUsersByRole, fetchSales } from "../utils/api";
+import { fetchStock, getUsersByRole, fetchSales, fetchAnalyticsSummary } from "../utils/api";
 import OrganizationSelector from "../components/OrganizationSelector";
 import AdminManagement from "../components/AdminManagement";
 import EmployeeManagement from "../components/EmployeeManagement";
@@ -56,10 +56,10 @@ const OwnerDashboard = () => {
     chartData: []
   });
 
-  // Hard-coded dashboard data (will be replaced with API calls later)
-  const [dashboardData] = useState({
-    totalProfit: 18500,
-    totalLoss: 3200
+  // Real Dashboard Data State (Profit/Loss)
+  const [dashboardData, setDashboardData] = useState({
+    totalProfit: 0,
+    totalLoss: 0
   });
 
   // Data for profit/loss pie chart
@@ -156,6 +156,23 @@ const OwnerDashboard = () => {
         setSalesStats({
           totalSold,
           chartData
+        });
+
+        // Fetch Profits/Losses
+        const analytics = await fetchAnalyticsSummary(token, orgId);
+        setDashboardData({
+          totalProfit: analytics.net_profit > 0 ? analytics.net_profit : 0, // Or show gross? Usually Net.
+          // Wait, logic in Pie chart uses "Profit" and "Loss".
+          // If Net Profit is negative, is it all loss?
+          // The Pie chart structure is: Profit (Green), Loss (Red).
+          // Let's us Gross Profit vs Total Losses for a better comparison?
+          // Or Revenue vs Expenses?
+          // User asked for "Profit vs Loss".
+          // Let's use: Profit = Gross Profit, Loss = Total Losses.
+          // Actually, let's use: Profit = analytics.net_profit (if positive), Loss = analytics.losses
+          // If Net Profit is negative, then Profit is 0.
+          totalProfit: analytics.net_profit > 0 ? analytics.net_profit : 0,
+          totalLoss: analytics.losses
         });
 
         // Fetch Admins
@@ -367,6 +384,13 @@ const OwnerDashboard = () => {
                   >
                     <ShoppingCart size={18} />
                     <span>See Sales Items</span>
+                  </button>
+                  <button
+                    className="profit-loss-btn"
+                    onClick={() => navigate("/dashboard/profit-loss")}
+                  >
+                    <TrendingUp size={18} />
+                    <span>See Profits/Losses</span>
                   </button>
                 </div>
               </div>
