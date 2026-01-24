@@ -12,7 +12,8 @@ import {
   BarChart3,
   Building2,
   Eye,
-  ShoppingCart
+  ShoppingCart,
+  Truck
 } from "lucide-react";
 import {
   LineChart,
@@ -25,10 +26,12 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend
+  Legend,
+  BarChart,
+  Bar
 } from "recharts";
 import { getCurrentUser, getCurrentOrganization, logout as logoutUser } from "../utils/storage";
-import { fetchStock, getUsersByRole, fetchSales, fetchAnalyticsSummary } from "../utils/api";
+import { fetchStock, getUsersByRole, fetchSales, fetchAnalyticsSummary, fetchShipments } from "../utils/api";
 import OrganizationSelector from "../components/OrganizationSelector";
 import AdminManagement from "../components/AdminManagement";
 import EmployeeManagement from "../components/EmployeeManagement";
@@ -55,6 +58,8 @@ const OwnerDashboard = () => {
     totalSold: 0,
     chartData: []
   });
+
+  const [supplierStats, setSupplierStats] = useState([]);
 
   // Real Dashboard Data State (Profit/Loss)
   const [dashboardData, setDashboardData] = useState({
@@ -174,6 +179,26 @@ const OwnerDashboard = () => {
           totalProfit: analytics.net_profit > 0 ? analytics.net_profit : 0,
           totalLoss: analytics.losses
         });
+
+
+
+        // Fetch Supplier Performance
+        const shipments = await fetchShipments(token, orgId);
+        const ratedShipments = shipments.filter(s => s.status === 'Arrived' && s.score !== null);
+        const supplierScores = {};
+
+        ratedShipments.forEach(s => {
+          const name = s.supplier_name || "Unknown";
+          if (!supplierScores[name]) supplierScores[name] = [];
+          supplierScores[name].push(s.score);
+        });
+
+        const supplierData = Object.keys(supplierScores).map(name => {
+          const scores = supplierScores[name];
+          const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+          return { name, score: parseFloat(avg.toFixed(1)) };
+        });
+        setSupplierStats(supplierData);
 
         // Fetch Admins
         const admins = await getUsersByRole("admin", token, orgId);
@@ -392,6 +417,14 @@ const OwnerDashboard = () => {
                     <TrendingUp size={18} />
                     <span>See Profits/Losses</span>
                   </button>
+                  <button
+                    className="stock-levels-btn" // Reuse style for simplicity or create new
+                    onClick={() => navigate("/dashboard/suppliers")}
+                    style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }} // Purple
+                  >
+                    <Truck size={18} />
+                    <span>Manage Suppliers</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -554,14 +587,39 @@ const OwnerDashboard = () => {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* User Stats Section */}
-            <div className="dashboard-stats">
+              {/* Supplier Performance Chart */}
+              <div className="chart-card">
+                <div className="chart-header">
+                  <div className="chart-title-section">
+                    <Truck size={24} className="chart-icon" />
+                    <h3>Supplier Performance</h3>
+                  </div>
+                </div>
+                <ResponsiveContainer width="100%" height={250}>
+                  <BarChart data={supplierStats}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="name" stroke={darkMode ? "#f1f5f9" : "#1e293b"} />
+                    <YAxis domain={[0, 100]} stroke={darkMode ? "#f1f5f9" : "#1e293b"} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: darkMode ? '#1e293b' : '#f1f5f9',
+                        border: `1px solid ${darkMode ? '#60a5fa' : '#0284c7'}`,
+                        borderRadius: '12px',
+                        color: darkMode ? '#f1f5f9' : '#1e293b'
+                      }}
+                      cursor={{ fill: 'transparent' }}
+                    />
+                    <Bar dataKey="score" fill="#8B5CF6" radius={[4, 4, 0, 0]} name="Avg Score (%)" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              {/* User Stats Cards (Merged into Grid) */}
               {stats.map((stat) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={stat.id} className="stat-card">
+                  <div key={stat.id} className="stat-card" style={{ height: '100%' }}>
                     <div className="stat-icon-wrapper" style={{ background: stat.bgGradient }}>
                       <Icon size={32} className="stat-icon" />
                     </div>

@@ -6,6 +6,7 @@ import OwnerDashboard from "./pages/OwnerDashboard";
 import StockDashboard from "./pages/StockDashboard";
 import SalesDashboard from "./pages/SalesDashboard";
 import ProfitLossDashboard from "./pages/ProfitLossDashboard";
+import SupplierDashboard from "./pages/SupplierDashboard";
 import "./App.css";
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
       <Route path="/dashboard/stock" element={<StockDashboard />} />
       <Route path="/dashboard/sales" element={<SalesDashboard />} />
       <Route path="/dashboard/profit-loss" element={<ProfitLossDashboard />} />
+      <Route path="/dashboard/suppliers" element={<SupplierDashboard />} />
     </Routes>
   );
 }

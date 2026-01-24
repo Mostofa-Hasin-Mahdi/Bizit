@@ -408,3 +408,102 @@ export const reportLoss = async (lossData, token, orgId = null) => {
         return await response.json();
     } catch (error) { throw error; }
 };
+
+// Supplier Management APIs
+export const fetchSuppliers = async (token, orgId = null) => {
+    try {
+        let url = `${API_URL}/suppliers`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch suppliers');
+        return await response.json();
+    } catch (error) { throw error; }
+};
+
+export const createSupplier = async (supplierData, token, orgId = null) => {
+    try {
+        let url = `${API_URL}/suppliers`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(supplierData)
+        });
+        if (!response.ok) throw new Error('Failed to create supplier');
+        return await response.json();
+    } catch (error) { throw error; }
+};
+
+export const fetchShipments = async (token, orgId = null) => {
+    try {
+        let url = `${API_URL}/shipments`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (!response.ok) throw new Error('Failed to fetch shipments');
+        return await response.json();
+    } catch (error) { throw error; }
+};
+
+export const createShipment = async (shipmentData, token, orgId = null) => {
+    try {
+        let url = `${API_URL}/shipments`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(shipmentData)
+        });
+        if (!response.ok) throw new Error('Failed to create shipment');
+        return await response.json();
+    } catch (error) { throw error; }
+};
+
+export const updateShipmentStatus = async (id, status, token, orgId = null) => {
+    try {
+        let url = `${API_URL}/shipments/${id}/status`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ status })
+        });
+        if (!response.ok) throw new Error('Failed to update shipment status');
+        return await response.json();
+    } catch (error) { throw error; }
+};
+
+export const rateShipment = async (id, ratingData, token, orgId = null) => {
+    try {
+        let url = `${API_URL}/shipments/${id}/rate`;
+        if (orgId) url += `?org_id=${orgId}`;
+
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(ratingData)
+        });
+        if (!response.ok) throw new Error('Failed to rate shipment');
+        return await response.json();
+    } catch (error) { throw error; }
+};

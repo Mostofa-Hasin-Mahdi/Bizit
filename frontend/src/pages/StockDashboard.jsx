@@ -14,7 +14,8 @@ import {
   Trash2,
   ArrowLeft,
   AlertOctagon,
-  TrendingUp
+  TrendingUp,
+  Truck
 } from "lucide-react";
 import {
   LineChart,
@@ -234,6 +235,14 @@ const StockDashboard = () => {
                 <span>Back to Dashboard</span>
               </button>
             )}
+            <button
+              className="back-to-dashboard-btn" // Reusing style
+              onClick={() => navigate("/dashboard/suppliers")}
+              style={{ marginLeft: '10px', background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)' }}
+            >
+              <Truck size={18} />
+              <span>Supplier Portal</span>
+            </button>
           </div>
         </div>
 
