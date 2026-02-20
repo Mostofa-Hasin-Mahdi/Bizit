@@ -202,7 +202,7 @@ const ProfitLossDashboard = () => {
                     </div>
                 </div>
 
-                <div className="dashboard-charts" style={{ gridTemplateColumns: '1fr 1fr' }}>
+                <div className="dashboard-charts profit-charts">
                     {/* Profit Waterfall / Composition Chart */}
                     <div className="chart-card">
                         <div className="chart-header">
@@ -268,7 +268,7 @@ const ProfitLossDashboard = () => {
                     <div className="section-header">
                         <h3>Loss History Log</h3>
                     </div>
-                    <div className="transactions-table-container">
+                    <div className="transactions-table-container" style={{ overflowX: 'auto' }}>
                         {loading ? <p>Loading...</p> : lossHistory.length === 0 ? (
                             <p className="empty-state-text">No losses recorded.</p>
                         ) : (

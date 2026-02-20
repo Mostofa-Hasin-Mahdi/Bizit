@@ -309,6 +309,7 @@
 
   .stock-levels-btn,
   .sales-items-btn,
+  .profit-loss-btn,
   .back-to-dashboard-btn {
     width: 100%;
     justify-content: center;
@@ -321,7 +322,7 @@
 
 .dashboard-charts {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
   gap: 24px;
   margin-bottom: 40px;
 }
@@ -565,7 +566,7 @@
 
 .dashboard-stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 24px;
 }
 
