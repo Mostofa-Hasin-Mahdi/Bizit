@@ -180,17 +180,6 @@ const SupplierDashboard = () => {
                 </div>
                 <div className="dashboard-nav-actions">
                     <button className="theme-toggle" onClick={toggleDarkMode}>{darkMode ? "☀️" : "🌙"}</button>
-                    {(user?.role === 'owner' || user?.role === 'admin') && (
-                        <button className="back-to-dashboard-btn" onClick={() => navigate("/dashboard/owner")}>
-                            <ArrowLeft size={18} /><span>Back to Dashboard</span>
-                        </button>
-                    )}
-                    {/* If employee, maybe no back button or back to? */}
-                    {!(user?.role === 'owner' || user?.role === 'admin') && (
-                        <button className="back-to-dashboard-btn" onClick={() => navigate("/dashboard/stock")}> {/* Assuming stock lead */}
-                            <ArrowLeft size={18} /><span>Back to Stock</span>
-                        </button>
-                    )}
                     <button className="logout-btn" onClick={() => { logoutUser(); navigate("/login"); }}>
                         <LogOut size={18} /><span>Logout</span>
                     </button>
@@ -198,6 +187,25 @@ const SupplierDashboard = () => {
             </header>
 
             <main className="dashboard-main">
+                <div className="dashboard-header">
+                    <div className="dashboard-header-content">
+                        <div>
+                            <h2>Supplier Dashboard</h2>
+                            <p>Manage your suppliers, shipments, and ratings.</p>
+                        </div>
+                        <div className="dashboard-action-buttons">
+                            {(user?.role === 'owner' || user?.role === 'admin') ? (
+                                <button className="back-to-dashboard-btn" onClick={() => navigate("/dashboard/owner")}>
+                                    <ArrowLeft size={18} /><span>Back to Dashboard</span>
+                                </button>
+                            ) : (
+                                <button className="back-to-dashboard-btn" onClick={() => navigate("/dashboard/stock")}>
+                                    <ArrowLeft size={18} /><span>Back to Stock</span>
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                </div>
                 <div className="dashboard-tabs">
                     <button className={`dashboard-tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>Overview</button>
                     <button className={`dashboard-tab ${activeTab === 'shipments' ? 'active' : ''}`} onClick={() => setActiveTab('shipments')}>Shipments</button>
