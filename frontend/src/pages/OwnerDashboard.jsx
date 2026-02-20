@@ -13,7 +13,8 @@ import {
   Building2,
   Eye,
   ShoppingCart,
-  Truck
+  Truck,
+  X
 } from "lucide-react";
 import {
   LineChart,
@@ -36,6 +37,7 @@ import OrganizationSelector from "../components/OrganizationSelector";
 import AdminManagement from "../components/AdminManagement";
 import EmployeeManagement from "../components/EmployeeManagement";
 import "../styles/dashboard.css";
+import "../styles/modal.css";
 
 const OwnerDashboard = () => {
   const navigate = useNavigate();
@@ -45,6 +47,7 @@ const OwnerDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, management
   const [numAdmins, setNumAdmins] = useState(0);
   const [numEmployees, setNumEmployees] = useState(0);
+  const [isOrgSelectorOpen, setIsOrgSelectorOpen] = useState(false);
 
   // Real Dashboard Data State
   const [stockStats, setStockStats] = useState({
@@ -322,7 +325,11 @@ const OwnerDashboard = () => {
         <div className="dashboard-logo-section">
           <BarChart3 size={28} className="dashboard-logo-icon" />
           <h1 className="dashboard-logo">Bizit</h1>
-          <div className="dashboard-org-info">
+          <div
+            className={`dashboard-org-info ${user?.role === "owner" ? "clickable" : ""}`}
+            onClick={() => user?.role === "owner" && setIsOrgSelectorOpen(true)}
+            title={user?.role === "owner" ? "Switch Organization" : ""}
+          >
             <Building2 size={16} />
             <span className="dashboard-org-name">{currentOrganization?.name || "Unknown"}</span>
           </div>
@@ -341,6 +348,29 @@ const OwnerDashboard = () => {
           </button>
         </div>
       </header>
+
+      {/* Organization Selector Modal */}
+      {isOrgSelectorOpen && user?.role === "owner" && (
+        <div className="modal-overlay">
+          <div className="modal-content" style={{ maxWidth: '800px', position: 'relative' }}>
+            <button
+              className="modal-close-btn"
+              onClick={() => setIsOrgSelectorOpen(false)}
+              style={{ position: 'absolute', top: '15px', right: '15px', zIndex: 10, background: 'rgba(0,0,0,0.05)' }}
+            >
+              <X size={24} />
+            </button>
+            <div style={{ paddingTop: '20px' }}>
+              <OrganizationSelector
+                onSelect={(org) => {
+                  handleOrganizationSelect(org);
+                  setIsOrgSelectorOpen(false);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Dashboard Content */}
       <main className="dashboard-main">
