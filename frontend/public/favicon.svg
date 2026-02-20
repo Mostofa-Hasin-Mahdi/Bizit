@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#0284c7" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0284c7" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="128" fill="url(#bg)" filter="url(#shadow)" />
+  <text x="50%" y="53%" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="340" fill="#ffffff" text-anchor="middle" dominant-baseline="central" letter-spacing="-8">B</text>
+</svg>
