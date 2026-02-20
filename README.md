@@ -9,7 +9,7 @@ A modern, full-stack business management application designed to help owners eff
 ## 🌟 Key Features
 
 ### 🏢 **Multi-Tenant Architecture & Organization Support**
-- <img width="826" height="625" alt="image" src="https://github.com/user-attachments/assets/a8f65e6d-cb5b-4098-bdd5-f5aeb7f499c3" />
+- <img width="834" height="500" alt="image" src="https://github.com/user-attachments/assets/2a5c961d-08f2-423d-be7b-fe594e059e51" />
 - **True Multi-Tenancy**: The application is built from the ground up to support multiple tenants safely within the same database infrastructure.
 - **Business Owners**: Create, manage, and seamlessly switch between multiple business organizations from a single account without logging out.
 - **Tenant Data Isolation**: Complete data segregation ensures privacy and security between different businesses.
