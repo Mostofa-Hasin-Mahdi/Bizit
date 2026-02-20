@@ -448,7 +448,7 @@ const SalesDashboard = () => {
               <div className="section-header">
                 <h3>Recent Transactions</h3>
               </div>
-              <div className="transactions-table-container">
+              <div className="transactions-table-container" style={{ overflowX: 'auto' }}>
                 {loading ? (
                   <p>Loading transactions...</p>
                 ) : sales.length === 0 ? (
