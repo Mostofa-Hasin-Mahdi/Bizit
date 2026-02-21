@@ -280,14 +280,34 @@
   font-family: "Inter", system-ui, sans-serif;
 }
 
-.auth-btn:hover {
+.auth-btn:hover:not(:disabled) {
   transform: translateY(-3px);
   box-shadow: 0 12px 30px rgba(2, 132, 199, 0.4);
   background: linear-gradient(135deg, var(--accent), var(--primary));
 }
 
-.auth-btn:active {
+.auth-btn:active:not(:disabled) {
   transform: translateY(-1px);
+}
+
+.auth-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* =========================

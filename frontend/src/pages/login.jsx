@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck, Loader2 } from "lucide-react";
 import { loginUser } from "../utils/api";
 import { setCurrentUser, setCurrentOrganization } from "../utils/storage";
 import { useDarkMode } from "../contexts/DarkModeContext";
@@ -18,6 +18,7 @@ export default function Login() {
 
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Check for success message from registration
@@ -41,6 +42,7 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setSuccessMessage("");
+    setLoading(true);
 
     try {
       const { user } = await loginUser({
@@ -93,6 +95,8 @@ export default function Login() {
       }
     } catch (err) {
       setError(err.message || "Invalid username or password");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -171,8 +175,15 @@ export default function Login() {
               </a>
             </div>
 
-            <button type="submit" className="auth-btn">
-              Login
+            <button type="submit" className="auth-btn" disabled={loading} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+              {loading ? (
+                <>
+                  <Loader2 className="spinner" size={20} />
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
             </button>
           </form>
 

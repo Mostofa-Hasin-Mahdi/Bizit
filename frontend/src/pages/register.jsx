@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { UserPlus } from "lucide-react";
+import { UserPlus, Loader2 } from "lucide-react";
 import { registerUser } from "../utils/api";
 import { useDarkMode } from "../contexts/DarkModeContext";
 import "../styles/login.css";
@@ -17,6 +17,7 @@ export default function Register() {
   });
 
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -46,6 +47,8 @@ export default function Register() {
       return;
     }
 
+    setLoading(true);
+
     try {
       // Create user account
       await registerUser({
@@ -61,6 +64,8 @@ export default function Register() {
       });
     } catch (err) {
       setError(err.message || "Failed to create account");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -149,8 +154,15 @@ export default function Register() {
               </div>
             )}
 
-            <button type="submit" className="auth-btn">
-              Create Account
+            <button type="submit" className="auth-btn" disabled={loading} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+              {loading ? (
+                <>
+                  <Loader2 className="spinner" size={20} />
+                  Creating Account...
+                </>
+              ) : (
+                "Create Account"
+              )}
             </button>
           </form>
 
