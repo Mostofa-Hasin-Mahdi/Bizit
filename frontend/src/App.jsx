@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import HomePage from "./pages/homepage";
 import Login from "./pages/login";
@@ -7,9 +8,14 @@ import StockDashboard from "./pages/StockDashboard";
 import SalesDashboard from "./pages/SalesDashboard";
 import ProfitLossDashboard from "./pages/ProfitLossDashboard";
 import SupplierDashboard from "./pages/SupplierDashboard";
+import { pingBackend } from "./utils/api";
 import "./App.css";
 
 function App() {
+  useEffect(() => {
+    pingBackend();
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />

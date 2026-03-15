@@ -21,6 +21,16 @@ export const registerUser = async (userData) => {
     }
 };
 
+export const pingBackend = async () => {
+    try {
+        const rootUrl = API_URL.replace(/\/api\/?$/, '');
+        await fetch(`${rootUrl}/health`, { method: 'GET' });
+        console.log("Backend pinged successfully to wake up server.");
+    } catch (error) {
+        console.warn("Backend ping failed (server might be waking up):", error);
+    }
+};
+
 export const deleteUser = async (userId, token) => {
     try {
         const response = await fetch(`${API_URL}/users/${userId}`, {
