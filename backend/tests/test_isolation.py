@@ -7,10 +7,15 @@ def test_unauthenticated_request(client):
     response = client.get("/api/stock")
     assert response.status_code == 401
 
-def test_a_lists_resource(client, seeded_data):
+@pytest.mark.parametrize("endpoint", [
+    "/api/stock",
+    "/api/sales",
+    "/api/suppliers"
+])
+def test_a_lists_resource(client, seeded_data, endpoint):
     # Test 1.2: A lists a resource -> Only A's rows
     token = seeded_data["org_a"]["admin"]["token"]
-    response = client.get("/api/stock", headers={"Authorization": f"Bearer {token}"})
+    response = client.get(endpoint, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
     # Assuming it returns a list of items
@@ -18,7 +23,7 @@ def test_a_lists_resource(client, seeded_data):
     for item in data:
         assert item["org_id"] == seeded_data["org_a"]["id"]
         # Ensure B's data didn't leak
-        assert item["id"] != seeded_data["org_b"]["stock_id"]
+        assert item["org_id"] != seeded_data["org_b"]["id"]
 
 def test_b_requests_a_record_by_id(client, seeded_data):
     # Test 1.3: B requests A's record by id -> 404/403

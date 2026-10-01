@@ -30,11 +30,63 @@ def setup_test_db():
     with database.get_db_connection() as conn:
         with conn.cursor() as cursor:
             # We must drop tables and recreate them to ensure a clean slate
-            cursor.execute("DROP TABLE IF EXISTS stock_items, user_departments, departments, user_roles, users, organizations, roles CASCADE;")
+            cursor.execute("DROP TABLE IF EXISTS shipments, suppliers, losses, sales, stock_items, user_departments, departments, user_roles, users, organizations, roles CASCADE;")
             cursor.execute(schema)
             # Add missing columns from update scripts
             cursor.execute("ALTER TABLE stock_items ADD COLUMN IF NOT EXISTS price DECIMAL(10, 2) DEFAULT 0;")
             cursor.execute("ALTER TABLE stock_items ADD COLUMN IF NOT EXISTS cost_price DECIMAL(10, 2) DEFAULT 0;")
+            
+            # Create Suppliers, Shipments, Sales, and Losses for complete coverage
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS suppliers (
+                    id SERIAL PRIMARY KEY,
+                    org_id INTEGER REFERENCES organizations(id) ON DELETE CASCADE,
+                    name VARCHAR(255) NOT NULL,
+                    phone VARCHAR(50),
+                    email VARCHAR(255),
+                    address TEXT,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+                
+                CREATE TABLE IF NOT EXISTS shipments (
+                    id SERIAL PRIMARY KEY,
+                    org_id INTEGER REFERENCES organizations(id) ON DELETE CASCADE,
+                    supplier_id INTEGER REFERENCES suppliers(id) ON DELETE CASCADE,
+                    expected_quantity INTEGER NOT NULL,
+                    received_quantity INTEGER,
+                    damaged_quantity INTEGER,
+                    expected_date DATE,
+                    received_date DATE,
+                    status VARCHAR(50) DEFAULT 'Pending',
+                    score DOUBLE PRECISION,
+                    notes TEXT,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+                
+                CREATE TABLE IF NOT EXISTS sales (
+                    id SERIAL PRIMARY KEY,
+                    org_id INT REFERENCES organizations(id) ON DELETE CASCADE,
+                    stock_item_id INT REFERENCES stock_items(id) ON DELETE SET NULL,
+                    sold_by INT REFERENCES users(id) ON DELETE SET NULL,
+                    quantity INT NOT NULL CHECK (quantity > 0),
+                    total_price DECIMAL(10, 2) NOT NULL,
+                    sale_date TIMESTAMP DEFAULT NOW()
+                );
+                
+                CREATE TABLE IF NOT EXISTS losses (
+                    id SERIAL PRIMARY KEY,
+                    org_id INT REFERENCES organizations(id) ON DELETE CASCADE,
+                    stock_item_id INT REFERENCES stock_items(id) ON DELETE SET NULL,
+                    quantity INT NOT NULL CHECK (quantity > 0),
+                    cost_at_loss DECIMAL(10, 2) NOT NULL,
+                    reason VARCHAR(50) NOT NULL,
+                    notes TEXT,
+                    reported_by INT REFERENCES users(id) ON DELETE SET NULL,
+                    loss_date TIMESTAMP DEFAULT NOW()
+                );
+            """)
             conn.commit()
     
     yield
@@ -112,14 +164,24 @@ def seeded_data(clean_db) -> Dict:
                 INSERT INTO stock_items (org_id, name, category, quantity)
                 VALUES (%s, 'Normal Item 1', 'Test', 10) RETURNING id;
             """, (org_a_id,))
-            data["org_a"]["stock_id"] = cursor.fetchone()['id']
+            org_a_stock_id = cursor.fetchone()['id']
+            data["org_a"]["stock_id"] = org_a_stock_id
             
             # Seed Org B Stock Items (Absurd values to catch leaks)
             cursor.execute("""
                 INSERT INTO stock_items (org_id, name, category, quantity)
                 VALUES (%s, 'LEAKED NOISE ITEM', 'Test', 999999) RETURNING id;
             """, (org_b_id,))
-            data["org_b"]["stock_id"] = cursor.fetchone()['id']
+            org_b_stock_id = cursor.fetchone()['id']
+            data["org_b"]["stock_id"] = org_b_stock_id
+            
+            # Seed Suppliers
+            cursor.execute("INSERT INTO suppliers (org_id, name) VALUES (%s, 'Org A Supplier') RETURNING id;", (org_a_id,))
+            cursor.execute("INSERT INTO suppliers (org_id, name) VALUES (%s, 'Org B Leaked Supplier') RETURNING id;", (org_b_id,))
+            
+            # Seed Sales
+            cursor.execute("INSERT INTO sales (org_id, stock_item_id, quantity, total_price) VALUES (%s, %s, 1, 10.00);", (org_a_id, org_a_stock_id))
+            cursor.execute("INSERT INTO sales (org_id, stock_item_id, quantity, total_price) VALUES (%s, %s, 999, 9999.00);", (org_b_id, org_b_stock_id))
             
             conn.commit()
             
