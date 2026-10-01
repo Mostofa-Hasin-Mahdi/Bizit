@@ -55,6 +55,8 @@ jobs:
         env:
           # We tell Pytest to connect to the temporary database we created above
           TEST_DATABASE_URL: postgresql://postgres:1234@localhost:5432/bizit_test_db
+          # Pydantic requires a SECRET_KEY to start the app, so we provide a dummy one for testing
+          SECRET_KEY: "dummy-secret-key-for-testing-purposes-only"
         run: |
           cd backend
           pytest tests/ -v
